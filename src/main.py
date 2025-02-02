@@ -1,34 +1,56 @@
 import tkinter as tk
 from tkinter import ttk
 import data_management as dm
-from data_management import Student as s
+
+class StudentProfileApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Student Profile")
+        self.root.geometry('400x600')
+
+        self.create_widgets()
+
+    def create_widgets(self):
+        frame1 = tk.Frame(self.root, bg="grey", width=390, height=590)
+        frame1.pack_propagate(False)
+        frame1.pack()
+
+        top_frame = tk.Frame(master=frame1, bg="lightgreen", width=380, height=50)
+        top_frame.pack_propagate(False)
+        search_entry = ttk.Entry(master=top_frame)
+        search_entry.pack(pady=5)
+        top_frame.pack(pady=20)
+
+        bot_frame = tk.Frame(master=frame1, bg="lightgreen", width=380, height=400)
+        bot_frame.pack_propagate(False)
+        bot_frame.pack()
+
+        canvas = tk.Canvas(bot_frame, bg="lightgreen", width=380, height=400)
+        scrollbar = ttk.Scrollbar(master=bot_frame, orient='vertical', command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        scrollable_frame = tk.Frame(canvas, bg="lightblue")
+        scrollable_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(
+                scrollregion=canvas.bbox("all")
+            )
+        )
+
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+
+        # Example list of widgets
+        for i in range(50):
+            tk.Label(scrollable_frame, text=f"Label {i}", bg="lightblue").pack()
+
 
 
 def main():
-    # mydata = dm.load_data("database/students.json")
-    # ms = dm.Student("Dustin", "Aamian", "Male", 20230456, "BSCS")
-    # mydata.append(ms.student_data)
-    # dm.write_data("database/students.json", sorted(mydata, key=lambda x: x['lname']))
-
-    window = tk.Tk()
-    window.title("Student Profile")
-    window.geometry('400x600')
-
-    top_frame = tk.Frame(master=window, bg="lightgreen", width=380, height=50)
-    top_frame.pack_propagate(False)
-    search_entry = ttk.Entry(master=top_frame)
-    search_entry.pack(pady=5)
-    top_frame.pack(pady=20)
-
-    bot_frame = tk.Frame(master=window, bg="lightgreen", width=380, height=400)
-    bot_frame.pack_propagate(False)
-
-    scrollbar = ttk.Scrollbar(master=bot_frame,orient='vertical')
-    scrollbar.pack(side="right")
-
-    bot_frame.pack()
-    # Start the main event loop
-    window.mainloop()
+    root = tk.Tk()
+    app = StudentProfileApp(root)
+    root.mainloop()
 
 if __name__ == "__main__":
     main()
