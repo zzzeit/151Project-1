@@ -13,6 +13,10 @@ def write_data(filename, newfile):
         with open(filename, 'w') as f:
             json.dump(newfile, f, indent=4)
 
+def sortDb(file):
+    write_data("./database/students.json", sorted(file, key=lambda s: s['lname']))
+
 class Student:
     def __init__(self, database, ID):
         print(database[0])
+        # sortDb(database)

@@ -1,23 +1,44 @@
 [
     {
-        "fname": "Dustin",
-        "lname": "Aamian",
-        "gender": "Male",
-        "ID#": 20230456,
+        "fname": "Emmeline",
+        "lname": "Christina",
+        "gender": "Female",
+        "ID#": 20239372,
         "program code": "BSCS"
     },
     {
-        "fname": "Neil Anthony",
-        "lname": "Balbutin",
-        "gender": "Male",
-        "ID#": 20230783,
+        "fname": "Alex",
+        "lname": "Jaslene",
+        "gender": "Female",
+        "ID#": 20237389,
         "program code": "BSCS"
     },
     {
-        "fname": "Dustin",
-        "lname": "Damian",
+        "fname": "Alexis",
+        "lname": "Jasper",
         "gender": "Male",
-        "ID#": 20230456,
+        "ID#": 20232445,
+        "program code": "BSCS"
+    },
+    {
+        "fname": "Mickey",
+        "lname": "Jessa",
+        "gender": "Female",
+        "ID#": 20245721,
+        "program code": "BSCS"
+    },
+    {
+        "fname": "Cedric",
+        "lname": "Melvile",
+        "gender": "Male",
+        "ID#": 20230324,
+        "program code": "BSCS"
+    },
+    {
+        "fname": "Balfour",
+        "lname": "River",
+        "gender": "Female",
+        "ID#": 20232351,
         "program code": "BSCS"
     }
 ]
