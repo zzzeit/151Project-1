@@ -14,7 +14,13 @@ class StudentProfileApp:
         self.bg_color = "white"
         self.students_database = dm.load_data("./database/students.json")
         
-        self.main_student = dm.Student(self.students_database, 20230783)
+        self.main_student =     {
+        "fname": "None",
+        "lname": "None",
+        "gender": "None",
+        "ID#": 00000000,
+        "program code": "None"
+    }
 
         self.create_main_frames()
 
@@ -28,12 +34,12 @@ class StudentProfileApp:
         if i == 1:
             for frame in self.root.winfo_children():
                 frame.pack_forget()
-            self.frame1_obj.getMainFrame().pack()
+            self.frame1_obj.transition()
 
         if i == 2:
             for frame in self.root.winfo_children():
                 frame.pack_forget()
-            self.frame2_obj.getMainFrame().pack()
+            self.frame2_obj.transition()
 
 
     # Getter methods
@@ -45,6 +51,12 @@ class StudentProfileApp:
     
     def getStudentDb(self):
         return self.students_database
+    
+    def getMainStud(self):
+        return self.main_student
+
+    def setMainStud(self, student):
+        self.main_student = student
 
         
 
