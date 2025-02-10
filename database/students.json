@@ -2,43 +2,49 @@
     {
         "fname": "Emmeline",
         "lname": "Christina",
-        "gender": "Female",
+        "sex": "Female",
         "ID#": 20239372,
+        "year lvl": "2nd",
         "program code": "BSCS"
     },
     {
         "fname": "Alex",
         "lname": "Jaslene",
-        "gender": "Female",
+        "sex": "Female",
         "ID#": 20237389,
-        "program code": "BSCS"
+        "year lvl": "2nd",
+        "program code": "BSIT"
     },
     {
         "fname": "Alexis",
         "lname": "Jasper",
-        "gender": "Male",
+        "sex": "Male",
         "ID#": 20232445,
+        "year lvl": "2nd",
         "program code": "BSCS"
     },
     {
         "fname": "Mickey",
         "lname": "Jessa",
-        "gender": "Female",
+        "sex": "Female",
         "ID#": 20245721,
+        "year lvl": "1st",
         "program code": "BSCS"
     },
     {
         "fname": "Cedric",
         "lname": "Melvile",
-        "gender": "Male",
+        "sex": "Male",
         "ID#": 20230324,
+        "year lvl": "2nd",
         "program code": "BSCS"
     },
     {
         "fname": "Balfour",
         "lname": "River",
-        "gender": "Female",
+        "sex": "Female",
         "ID#": 20232351,
+        "year lvl": "2nd",
         "program code": "BSCS"
     }
 ]

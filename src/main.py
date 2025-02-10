@@ -1,4 +1,5 @@
 import tkinter as tk
+import datetime as dt
 
 import data_management as dm
 import widgets as ws
@@ -13,13 +14,15 @@ class StudentProfileApp:
 
         self.bg_color = "white"
         self.students_database = dm.load_data("./database/students.json")
-        
+        self.current_year = dt.datetime.now().year
+
         self.main_student =     {
-        "fname": "None",
-        "lname": "None",
-        "gender": "None",
+        "fname": "",
+        "lname": "",
+        "sex": "",
         "ID#": 00000000,
-        "program code": "None"
+        "year lvl": "",
+        "program code": ""
     }
 
         self.create_main_frames()
@@ -27,8 +30,7 @@ class StudentProfileApp:
     def create_main_frames(self):
         self.frame1_obj = ws.Frame1(self)
         self.frame2_obj = ws.Frame2(self)
-
-        self.transition_frames(2)
+        self.transition_frames(1)
 
     def transition_frames(self, i):
         if i == 1:
@@ -54,6 +56,9 @@ class StudentProfileApp:
     
     def getMainStud(self):
         return self.main_student
+
+    def getCurrYear(self):
+        return self.current_year
 
     def setMainStud(self, student):
         self.main_student = student

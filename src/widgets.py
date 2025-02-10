@@ -165,16 +165,15 @@ class Frame2:
         self.body2.pack_propagate(False)
         self.body2.pack()
 
-        tk.Frame(self.body2, bg=app.getBg(), height=40).pack()
-
         # Sex
         self.sex_frame = tk.Frame(self.body2, bg="lightblue", width=350, height=40)
         self.sex_frame.pack_propagate(False)
-        self.sex_frame.pack()
+        self.sex_frame.pack(pady=(40, 0))
 
         self.sex_label = tk.Label(self.sex_frame, text="Sex", font=("Helvetica", 10))
         self.sex_label.pack(side="left", padx=50)
-        self.sex_value = tk.Label(self.sex_frame, text="M", font=("Helvetica", 10))
+        self.sex_value_var = tk.StringVar(value="")
+        self.sex_value = tk.Label(self.sex_frame, textvariable=self.sex_value_var, font=("Helvetica", 10))
         self.sex_value.pack(side="right", padx=50)
 
         # Year Level
@@ -184,7 +183,8 @@ class Frame2:
 
         self.year_label = tk.Label(self.year_frame, text="Year Level")
         self.year_label.pack(side="left", padx=50)
-        self.year_value = tk.Label(self.year_frame, text="2nd Year")
+        self.year_value_var = tk.StringVar(value="")
+        self.year_value = tk.Label(self.year_frame, textvariable=self.year_value_var)
         self.year_value.pack(side="right", padx=50)
 
         # Program Code
@@ -194,12 +194,16 @@ class Frame2:
 
         self.program_label = tk.Label(self.program_frame, text="Program Code")
         self.program_label.pack(side="left", padx=50)
-        self.program_value = tk.Label(self.program_frame, text="BSCS")
+        self.program_value_var = tk.StringVar(value="")
+        self.program_value = tk.Label(self.program_frame, textvariable=self.program_value_var)
         self.program_value.pack(side="right", padx=50)
 
     def update_stud_info_values(self):
         self.full_name_var.set(self.app.getMainStud()['fname'] + " " + self.app.getMainStud()['lname'])
         self.id_var.set(str(self.app.getMainStud()['ID#'])[:4] + "-" + str(self.app.getMainStud()['ID#'])[4:8])
+        self.sex_value_var.set(self.app.getMainStud()['sex'])
+        self.year_value_var.set(self.app.getMainStud()['year lvl'] + " Year")
+        self.program_value_var.set(self.app.getMainStud()['program code'])
 
 
     def transition(self):
