@@ -30,18 +30,13 @@ class StudentProfileApp:
     def create_main_frames(self):
         self.frame1_obj = ws.Frame1(self)
         self.frame2_obj = ws.Frame2(self)
-        self.transition_frames(1)
+        self.frame3_obj = ws.Frame3(self)
+        self.transition_frames(self.frame3_obj)
 
-    def transition_frames(self, i):
-        if i == 1:
-            for frame in self.root.winfo_children():
-                frame.pack_forget()
-            self.frame1_obj.transition()
-
-        if i == 2:
-            for frame in self.root.winfo_children():
-                frame.pack_forget()
-            self.frame2_obj.transition()
+    def transition_frames(self, mainFrame):
+        for widget in self.root.winfo_children():
+            widget.pack_forget()
+        mainFrame.transition()
 
 
     # Getter methods

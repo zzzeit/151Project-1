@@ -70,8 +70,12 @@ class Frame1:
         )
 
         self.canvas1.create_window((0, 0), window=self.scrollable_frame, anchor="n", width=360)
-        self.scrollbar.pack(side="right", fill="y")
-        self.canvas1.pack(side="left", fill="both", expand=True)
+        # self.scrollbar.pack(side="right", fill="y")
+        # self.canvas1.pack(side="left", fill="both", expand=True)
+
+
+        self.add_student_button = tk.Button(self.bot_frame, width=20, height=10)
+        self.add_student_button.pack(pady=(160, 0))
 
         
         # for i in range(14):
@@ -81,6 +85,10 @@ class Frame1:
     def on_entry_updated(self, *args):
         for widget in self.scrollable_frame.winfo_children():
             widget.pack_forget()
+
+        self.scrollbar.pack(side="right", fill="y")
+        self.canvas1.pack(side="left", fill="both", expand=True)
+        self.add_student_button.pack_forget()
 
         temp = []
         for student in self.acquired_student_profiles:
@@ -99,7 +107,10 @@ class Frame1:
         if not self.entry_str_var.get():
             for widget in self.scrollable_frame.winfo_children():
                 widget.pack_forget()
+            self.scrollbar.pack_forget()
+            self.canvas1.pack_forget()
             self.acquired_student_profiles = self.app.getStudentDb()
+            self.add_student_button.pack(pady=(160, 0))
 
     def transition(self):
         self.frame1.pack()
@@ -212,3 +223,12 @@ class Frame2:
 
     def getMainFrame(self):
         return self.frame2
+    
+class Frame3:
+    def __init__(self, app):
+        self.app = app
+        self.frame3 = tk.Frame(app.getRoot(), bg="grey", width=390, height=590)
+        self.frame3.pack_propagate(False)
+
+    def transition(self):
+        self.frame3.pack()
