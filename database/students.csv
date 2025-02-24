@@ -1,2 +1,7 @@
-"fname","lname","sex","ID#","year lvl","college code","program code"
-"Emmeline","Christina","Female",20239372,"2nd","CCS","BSCS"
+fname,lname,sex,ID#,year lvl,program code
+Emmeline,Christina,Female,20239372,2nd,CCS,BSCS
+Neil Anthony,Balbutin,Male,20230783,1st,CSM,BS Physics
+John,Burnick,Male,20237637,1st,CCS,BSIS
+Mike,Gregory,Male,20219742,3rd,CSM,BS Chemistry
+Tim,Lemony,Male,20175632,2nd,CSM,BS Chemistry
+Angelica,Rojo,Female,20141908,3rd,CCS,BSCA

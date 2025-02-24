@@ -16,14 +16,7 @@ class StudentProfileApp:
         self.students_database = dm.load_data("./database/students.csv")
         self.current_year = dt.datetime.now().year
 
-        self.main_student =     {
-        "fname": "",
-        "lname": "",
-        "sex": "",
-        "ID#": 00000000,
-        "year lvl": "",
-        "program code": ""
-    }
+        self.search_setting = 0
 
         self.create_main_frames()
 
@@ -31,12 +24,25 @@ class StudentProfileApp:
         self.frame1_obj = ws.Frame1(self)
         self.frame2_obj = ws.Frame2(self)
         self.frame3_obj = ws.Frame3(self)
+        self.frame4_obj = ws.Frame4(self)
         self.transition_frames(self.frame1_obj)
 
     def transition_frames(self, mainFrame):
         for widget in self.root.winfo_children():
             widget.pack_forget()
         mainFrame.transition()
+
+    def get_student(self, id):
+        for student in self.students_database:
+            if id == student[3]:
+                return student
+        return None
+
+    def sort_students(self, key_index=0, ascending=True):
+        if key_index == 3:
+            key_index = 1
+        self.students_database = sorted(self.students_database, key=lambda student: student[key_index], reverse=not ascending)
+
 
 
     # Getter methods
@@ -51,12 +57,19 @@ class StudentProfileApp:
     
     def getMainStud(self):
         return self.main_student
+    
+    def getSearchSet(self):
+        return self.search_setting
+    
+    def setSearchSet(self, i):
+        self.search_setting = i
 
     def getCurrYear(self):
         return self.current_year
 
     def setMainStud(self, student):
         self.main_student = student
+
 
         
 

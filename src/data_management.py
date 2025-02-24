@@ -12,7 +12,7 @@ CCODE = 5
 PCODE = 6
 
 def write_data(filename, data):
-    with open(filename, 'w') as f:
+    with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(["fname","lname","sex","ID#","year lvl","program code"])
         writer.writerows(data)
@@ -21,6 +21,13 @@ def load_data(filename):
         reader = csv.reader(f)
         header = next(reader)
         return list(reader)
+    
+
+# data = [["Emmeline","Christina","Female",20239372,"2nd","CCS","BSCS"]]
+# loc = "./database/students.csv"
+# # write_data(loc, data)
+
+# print(load_data(loc))
     
 
 def write_data_json(filename, newfile):
