@@ -13,7 +13,7 @@ class StudentProfileApp:
         self.root.resizable(False, False)
 
         self.bg_color = "white"
-        self.students_database = dm.load_data("./database/students.json")
+        self.students_database = dm.load_data("./database/students.csv")
         self.current_year = dt.datetime.now().year
 
         self.main_student =     {
@@ -31,7 +31,7 @@ class StudentProfileApp:
         self.frame1_obj = ws.Frame1(self)
         self.frame2_obj = ws.Frame2(self)
         self.frame3_obj = ws.Frame3(self)
-        self.transition_frames(self.frame3_obj)
+        self.transition_frames(self.frame1_obj)
 
     def transition_frames(self, mainFrame):
         for widget in self.root.winfo_children():
