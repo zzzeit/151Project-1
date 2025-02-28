@@ -38,16 +38,16 @@ class Frame1:
         self.frame1.pack_propagate(False)
         # self.frame1.pack()
 
-        self.top_frame = tk.Frame(master=self.frame1, width=665, height=50, bg=app.getColor(1))
+        self.top_frame = tk.Frame(master=self.frame1, width=665, height=50, bg=app.getColor(0))
         self.top_frame.pack_propagate(False)
-        self.top_frame_container = tk.Frame(self.top_frame)
+        self.top_frame_container = tk.Frame(self.top_frame, bg=app.getColor(0))
         self.search_entry = ttk.Entry(master=self.top_frame_container, width=30, font=("Helvetica", 15), textvariable=self.entry_str_var)
         self.top_frame_container.pack()
         self.top_frame.pack(pady=(20,0))
 
         self.top_row_frame = tk.Frame(master=self.frame1, width=665 , height=25, bg=app.getColor(2))
         self.top_row_frame.pack_propagate(False)
-        self.top_row_frame.pack(pady=(25,0))
+        self.top_row_frame.pack(pady=(10, 15))
 
         self.labels_frame = tk.Frame(master=self.top_row_frame, bg=app.getColor(2))
         self.labels_frame.pack(padx=(0, 10), side="left")
@@ -76,11 +76,12 @@ class Frame1:
         self.scrollbar.pack(side="right", fill="y")
         self.canvas1.pack(side="left", fill="both", expand=True)
 
+        self.canvas1.bind_all("<MouseWheel>", lambda event: self.canvas1.yview_scroll(int(-1*(event.delta/120)), "units"))
 
-        self.add_student_button = tk.Button(self.top_frame_container, width=3, text="Add", command=lambda: app.transition_frames(app.frame3_obj))
-        self.settings_button = tk.Button(self.top_frame_container, text="Settings", command=lambda: app.transition_frames(app.frame4_obj))
+        self.add_student_button = ttk.Button(self.top_frame_container, width=5, text="Add", command=lambda: app.transition_frames(app.frame3_obj))
+        self.settings_button = ttk.Button(self.top_frame_container, text="Settings", command=lambda: app.transition_frames(app.frame4_obj))
         self.add_student_button.pack(side="left")
-        self.search_entry.pack(side="left", padx=10)
+        self.search_entry.pack(side="left", padx=100)
         self.settings_button.pack(side="left")
         
         # for i in range(14):
@@ -154,7 +155,7 @@ class Frame2:
         self.back_button = ttk.Button(self.header, text="Back", width=5, command=lambda: app.transition_frames(app.frame1_obj))
         self.back_button.pack(side="left", padx=10)
 
-        self.delete_button = ttk.Button(self.header, text="Delete", width=6)
+        self.delete_button = ttk.Button(self.header, text="Delete", width=6, command=lambda: [app.delete_student(app.getMainStud()[ID]), app.transition_frames(app.frame1_obj)])
         self.delete_button.pack(side="right", padx=10)
 
         self.body1 = tk.Frame(self.frame2, width=682.5, height=300, bg=app.getColor(0))
@@ -397,7 +398,8 @@ class Frame3:
                 self.alert_message("Input Error", "All fields must be filled out.")
                 return
             values.append(e.get())
-
+        values[FNAME] = values[FNAME].capitalize()
+        values[LNAME] = values[LNAME].capitalize()
         # Name Error
         for c in values[FNAME].replace(" ", ""):
             if not c.isalpha():
@@ -457,24 +459,24 @@ class Frame4:
         self.frame4.pack()
 
         # Search By
-        self.search_frame = tk.Frame(self.frame4, width=150, height=20, bg=app.getColor(1))
+        self.search_frame = tk.Frame(self.frame4, width=150, height=20)
         self.search_frame.pack_propagate(False)
         self.search_frame.pack(pady=(10,0))
 
         self.search_label = tk.Label(self.search_frame, text="Search By: ")
         self.search_label.pack(side="left")
 
-        self.searchValues = {"First Name" : 0, "Last Name" : 1, "ID#" : 3}
+        self.searchValues = {"First Name" : 0, "Last Name" : 1, "ID#" : 3, "Year Level" : 4}
         self.search_cb = ttk.Combobox(self.search_frame, state='readonly', values=list(self.searchValues.keys()), width=8)
         self.search_cb.pack(side="right")
         self.search_cb.set("First Name")
 
         # Sort By
-        self.sort_frame = tk.Frame(self.frame4, width=150, height=20, bg=app.getColor(1))
+        self.sort_frame = tk.Frame(self.frame4, width=150, height=20)
         self.sort_frame.pack_propagate(False)
         self.sort_frame.pack(pady=(10,0))
 
-        self.sort_label = tk.Label(self.sort_frame, text="Sort: ")
+        self.sort_label = tk.Label(self.sort_frame, text="Order: ")
         self.sort_label.pack(side="left")
 
         self.sortValues = {"Ascending" : True, "Descending" : False}
@@ -483,7 +485,7 @@ class Frame4:
         self.sort_cb.set("Ascending")
 
         # Done
-        self.done_button = tk.Button(self.frame4, text="DONE", command=self.done_button)
+        self.done_button = ttk.Button(self.frame4, text="DONE", command=self.done_button)
         self.done_button.pack(pady=10)
     
     def done_button(self):

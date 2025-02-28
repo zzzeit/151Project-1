@@ -9,7 +9,7 @@ class StudentProfileApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Student Profile")
-        self.root.geometry('700x670')
+        self.root.geometry('700x640')
         self.root.resizable(False, False)
 
 
@@ -44,10 +44,11 @@ class StudentProfileApp:
         return None
 
     def sort_students(self, key_index=0, ascending=True):
-        if key_index == 3:
-            key_index = 1
         self.students_database = sorted(self.students_database, key=lambda student: student[key_index], reverse=not ascending)
 
+    def delete_student(self, student_id):
+        self.students_database = [student for student in self.students_database if student[3] != student_id]
+        dm.write_data("./database/students.csv", self.students_database)
 
 
     # Getter methods
