@@ -9,18 +9,21 @@ class StudentProfileApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Student Profile")
-        self.root.geometry('400x600')
+        self.root.geometry('700x670')
         self.root.resizable(False, False)
 
-        self.bg_color = "white"
+
         self.students_database = dm.load_data("./database/students.csv")
         self.current_year = dt.datetime.now().year
 
         self.main_student = None
 
         self.search_setting = 0
-
+        self.themeColors = ["#454148", "#5c5960", "#757278", "#8f8d92"]
+        self.root.configure(bg=self.themeColors[0])
         self.create_main_frames()
+
+
 
     def create_main_frames(self):
         self.frame1_obj = ws.Frame1(self)
@@ -48,11 +51,12 @@ class StudentProfileApp:
 
 
     # Getter methods
+    def getColor(self, index):
+        return self.themeColors[index]
+
     def getRoot(self):
         return self.root
-    
-    def getBg(self):
-        return self.bg_color
+
     
     def getStudentDb(self):
         return self.students_database

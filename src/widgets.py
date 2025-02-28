@@ -9,33 +9,21 @@ import main
 
 class MiniProfile:
     def __init__(self, app, master, student):
-        frame = tk.Frame(master, bg="white", width=330, height=80)
+        frame = tk.Frame(master, bg=app.getColor(2), width=620, height=30)
         frame.pack_propagate(False)
-        frame.pack(pady=5)
+        frame.pack(pady=5, padx=(10, 0))
         frame.bind("<Button-1>", lambda event: [ app.setMainStud(student), app.transition_frames(app.frame2_obj)])
 
-        canvas = tk.Canvas(frame, bg="white", width=50, height=50)
-        canvas.pack(side="left", padx=(40, 0))
-        image = Image.open("./assets/image.jpg")
-        image = image.resize((53, 53))
-        photo = ImageTk.PhotoImage(image)
-        canvas.create_image(0, 0, image=photo, anchor=tk.NW)
-        canvas.image = photo
+        x = [3, 6,]
+        for i in range(0, 7):
+            t = student[i]
+            if i == ID:
+                t = text=str(student[ID])[:4] + "-" + str(student[ID])[4:8]
+            l = tk.Label(frame, text=t, bg=app.getColor(2), width=11)
+            l.pack_propagate(False)
+            l.pack(padx=(3, 0), side="left")
+            l.bind("<Button-1>", lambda event: [ app.setMainStud(student), app.transition_frames(app.frame2_obj)])
 
-        canvas.create_oval(-3, -3, 56, 56, outline="white", width=10)
-
-        student_info = tk.Frame(frame, bg="white")
-        student_info.pack(side="left", padx=40)
-
-        nameframe = tk.Frame(student_info, bg="white")
-        nameframe.pack()
-        name = tk.Label(nameframe, text=student[FNAME] + " " + student[LNAME], font=("Helvetica", 12), bg="white")
-        name.pack(side="left")
-
-        idframe = tk.Frame(student_info, bg="white")
-        idframe.pack()
-        self.id = tk.Label(student_info, text=str(student[ID])[:4] + "-" + str(student[ID])[4:8], bg="white")
-        self.id.pack(side="left")
 
 class Frame1:
     def __init__(self, app):
@@ -46,34 +34,45 @@ class Frame1:
         self.create_widgets(app)
 
     def create_widgets(self, app):
-        self.frame1 = tk.Frame(app.getRoot(), width=390, height=590)
+        self.frame1 = tk.Frame(app.getRoot(), width=682.5, height=590, bg=self.app.getColor(0))
         self.frame1.pack_propagate(False)
         # self.frame1.pack()
 
-        self.top_frame = tk.Frame(master=self.frame1, width=380, height=50)
+        self.top_frame = tk.Frame(master=self.frame1, width=665, height=50, bg=app.getColor(1))
         self.top_frame.pack_propagate(False)
         self.top_frame_container = tk.Frame(self.top_frame)
-        self.search_entry = ttk.Entry(master=self.top_frame_container, font=("Helvetica", 15), textvariable=self.entry_str_var)
+        self.search_entry = ttk.Entry(master=self.top_frame_container, width=30, font=("Helvetica", 15), textvariable=self.entry_str_var)
         self.top_frame_container.pack()
-        self.top_frame.pack(pady=20)
+        self.top_frame.pack(pady=(20,0))
 
-        self.bot_frame = tk.Frame(master=self.frame1, width=380, height=600)
+        self.top_row_frame = tk.Frame(master=self.frame1, width=665 , height=25, bg=app.getColor(2))
+        self.top_row_frame.pack_propagate(False)
+        self.top_row_frame.pack(pady=(25,0))
+
+        self.labels_frame = tk.Frame(master=self.top_row_frame, bg=app.getColor(2))
+        self.labels_frame.pack(padx=(0, 10), side="left")
+        labels = {"First N":35, "Last N":47, "Sex":55, "ID#":66, "Year Level":43, "College":35, "Code":45}
+        for i in list(labels.keys()):
+            self.label_ = tk.Label(master=self.labels_frame, bg=app.getColor(2), text=i)
+            self.label_.pack(side="left", padx=(labels[i],0))
+
+        self.bot_frame = tk.Frame(master=self.frame1, width=665, height=600)
         self.bot_frame.pack_propagate(False)
-        self.bot_frame.pack()
+        self.bot_frame.pack(pady=(3,0))
 
-        self.canvas1 = tk.Canvas(self.bot_frame, width=380, height=400)
+        self.canvas1 = tk.Canvas(self.bot_frame, width=680, height=400, bg=app.getColor(1))
         self.scrollbar = ttk.Scrollbar(master=self.bot_frame, orient='vertical', command=self.canvas1.yview)
         self.canvas1.configure(yscrollcommand=self.scrollbar.set)
 
-        self.scrollable_frame = tk.Frame(self.canvas1)
+        self.scrollable_frame = tk.Frame(self.canvas1, bg=app.getColor(1))
         self.scrollable_frame.bind(
             "<Configure>",
             lambda e: self.canvas1.configure(
                 scrollregion=self.canvas1.bbox("all")
             )
         )
-
-        self.canvas1.create_window((0, 0), window=self.scrollable_frame, anchor="n", width=360)
+        self.canvas1.configure(bg=app.getColor(1))
+        self.canvas1.create_window((0, 0), window=self.scrollable_frame, anchor="n", width=620)
         self.scrollbar.pack(side="right", fill="y")
         self.canvas1.pack(side="left", fill="both", expand=True)
 
@@ -144,11 +143,11 @@ class Frame1:
 class Frame2:
     def __init__(self, app):
         self.app = app
-        self.frame2 = tk.Frame(app.getRoot(), width=390, height=590)
+        self.frame2 = tk.Frame(app.getRoot(), width=682.5, height=590, bg=app.getColor(0))
         self.frame2.pack_propagate(False)
         # self.frame2.pack()
 
-        self.header = tk.Frame(self.frame2, width=390, height=50)
+        self.header = tk.Frame(self.frame2, width=682.5, height=50, bg=app.getColor(0))
         self.header.pack_propagate(False)
         self.header.pack()
 
@@ -158,7 +157,7 @@ class Frame2:
         self.delete_button = ttk.Button(self.header, text="Delete", width=6)
         self.delete_button.pack(side="right", padx=10)
 
-        self.body1 = tk.Frame(self.frame2, width=390, height=300)
+        self.body1 = tk.Frame(self.frame2, width=682.5, height=300, bg=app.getColor(0))
         self.body1.pack_propagate(False)
         self.body1.pack()
 
@@ -173,60 +172,62 @@ class Frame2:
         self.canvas2.create_image(87.5, 87.5, image=photo, anchor=tk.CENTER)
         self.canvas2.image = photo  # Keep a reference to avoid garbage collection
 
-        self.canvas2.create_oval(-50, -50, 225, 225, outline="#F0F0F0", width=100)
+        self.canvas2.create_oval(-50, -50, 225, 225, outline=app.getColor(0), width=100)
 
+        self.nameFrame = tk.Frame(self.body1, bg=app.getColor(0))
+        self.nameFrame.pack()
         # Full Name
         self.full_name_var = tk.StringVar(value="Empty")
-        self.full_name = tk.Label(self.body1, textvariable=self.full_name_var, font=("Helvetica", 16))
+        self.full_name = tk.Label(self.nameFrame, textvariable=self.full_name_var, font=("Helvetica", 16), bg=app.getColor(0), foreground="white")
         self.full_name.pack()
 
         # ID Number
         self.id_var = tk.StringVar(value="0000-0000")
-        self.id = tk.Label(self.body1, textvariable=self.id_var, font=("Helvetica", 10))
+        self.id = tk.Label(self.nameFrame, textvariable=self.id_var, font=("Helvetica", 10), bg=app.getColor(0), foreground="white")
         self.id.pack()
 
         # Border
-        self.border = tk.Canvas(self.body1, width=340, height=10, highlightthickness=0)
+        self.border = tk.Canvas(self.body1, width=340, height=10, highlightthickness=0, bg=app.getColor(0))
         self.border.pack(side="bottom")
 
-        self.border.create_line(0, 5, 340, 5, width=3)
+        self.border.create_line(0, 5, 340, 5, width=3, fill=app.getColor(3))
 
         # BODY 2
-        self.body2 = tk.Frame(self.frame2, width=390, height=250, )
+        self.body2 = tk.Frame(self.frame2, width=682.5, height=250, bg=app.getColor(0))
         self.body2.pack_propagate(False)
         self.body2.pack()
 
         # Sex
-        self.sex_frame = tk.Frame(self.body2, width=350, height=40)
+        self.sex_frame = tk.Frame(self.body2, width=350, height=40, bg=app.getColor(2))
         self.sex_frame.pack_propagate(False)
         self.sex_frame.pack(pady=(40, 0))
 
-        self.sex_label = tk.Label(self.sex_frame, text="Sex", font=("Helvetica", 10))
+        self.sex_label = tk.Label(self.sex_frame, text="Sex", font=("Helvetica", 10), bg=app.getColor(2))
         self.sex_label.pack(side="left", padx=50)
         self.sex_value_var = tk.StringVar(value="")
-        self.sex_value = tk.Label(self.sex_frame, textvariable=self.sex_value_var, font=("Helvetica", 10))
+        self.sex_value = tk.Label(self.sex_frame, textvariable=self.sex_value_var, font=("Helvetica", 10), bg=app.getColor(2))
         self.sex_value.pack(side="right", padx=50)
 
         # Year Level
-        self.year_frame = tk.Frame(self.body2, width=350, height=40)
+        self.year_frame = tk.Frame(self.body2, width=350, height=40, bg=app.getColor(2))
         self.year_frame.pack_propagate(False)
         self.year_frame.pack()
 
-        self.year_label = tk.Label(self.year_frame, text="Year Level")
+        self.year_label = tk.Label(self.year_frame, text="Year Level", bg=app.getColor(2))
         self.year_label.pack(side="left", padx=50)
         self.year_value_var = tk.StringVar(value="")
-        self.year_value = tk.Label(self.year_frame, textvariable=self.year_value_var)
+        self.year_value = tk.Label(self.year_frame, textvariable=self.year_value_var, bg=app.getColor(2))
         self.year_value.pack(side="right", padx=50)
 
         # Program Code
-        self.program_frame = tk.Frame(self.body2, width=350, height=40)
+        self.program_frame = tk.Frame(self.body2, width=350, height=40, bg=app.getColor(2))
         self.program_frame.pack_propagate(False)
         self.program_frame.pack()
 
-        self.program_label = tk.Label(self.program_frame, text="Program Code")
+        self.program_label = tk.Label(self.program_frame, text="Program Code", bg=app.getColor(2))
         self.program_label.pack(side="left", padx=(50,0))
         self.program_value_var = tk.StringVar(value="")
-        self.program_value = tk.Label(self.program_frame, textvariable=self.program_value_var)
+        self.program_value = tk.Label(self.program_frame, textvariable=self.program_value_var, bg=app.getColor(2))
         self.program_value.pack(side="right", padx=(0,50))
 
     def update_stud_info_values(self):
@@ -246,18 +247,21 @@ class Frame2:
     
 class Frame3:
     def __init__(self, app):
+        colorNum = app.getColor(2)
         self.app = app
-        self.frame3 = tk.Frame(app.getRoot(), width=390, height=590)
+        self.frame3 = tk.Frame(app.getRoot(), width=682.5, height=590, bg=app.getColor(0))
         self.frame3.pack_propagate(False)
 
-        self.header = tk.Frame(self.frame3, width=390, height=50)
+        self.header = tk.Frame(self.frame3, width=682.5, height=50, bg=app.getColor(0))
         self.header.pack_propagate(False)
         self.header.pack()
 
-        self.back_button = ttk.Button(self.header, text="Back", width=5, command=lambda: app.transition_frames(app.frame1_obj))
+        style = ttk.Style()
+        style.configure('TButton', background=app.getColor(0), foreground=app.getColor(0))
+        self.back_button = ttk.Button(self.header, text="Back", width=5, command=lambda: [self.clear_entries, app.transition_frames(app.frame1_obj)], style='TButton')
         self.back_button.pack(side="left", padx=10)
 
-        self.body1 = tk.Frame(self.frame3, width=390, height=540)
+        self.body1 = tk.Frame(self.frame3, width=682.5, height=540, bg=app.getColor(0))
         self.body1.pack_propagate(False)
         self.body1.pack()
 
@@ -272,52 +276,52 @@ class Frame3:
         self.canvas2.create_image(87.5, 87.5, image=photo, anchor=tk.CENTER)
         self.canvas2.image = photo  # Keep a reference to avoid garbage collection
 
-        self.canvas2.create_oval(-50, -50, 225, 225, outline="#F0F0F0", width=100)
+        self.canvas2.create_oval(-50, -50, 225, 225, outline=app.getColor(0), width=100)
 
         # Frame for Entries
         self.entry_frame_height = 40
-        self.entry_frame = tk.Frame(self.body1, width=290, height=200)
+        self.entry_frame = tk.Frame(self.body1, width=290, height=200, bg=app.getColor(0))
         self.entry_frame.pack()
 
         # First Name
-        self.first_name_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height)
+        self.first_name_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height, bg=colorNum)
         self.first_name_frame.pack_propagate(False)
         self.first_name_frame.pack()
 
-        self.first_name_label = ttk.Label(self.first_name_frame, text="First Name:", font=("Helvetica", 13))
+        self.first_name_label = tk.Label(self.first_name_frame, text="First Name:", font=("Helvetica", 13), bg=colorNum)
         self.first_name_label.pack(side="left", padx=(20, 0))
 
         self.first_name_entry = ttk.Entry(self.first_name_frame)
         self.first_name_entry.pack(side="right", padx=(0, 20))
 
         # Last Name
-        self.last_name_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height)
+        self.last_name_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height, bg=colorNum)
         self.last_name_frame.pack_propagate(False)
         self.last_name_frame.pack()
 
-        self.last_name_label = ttk.Label(self.last_name_frame, text="Last Name:", font=("Helvetica", 13))
+        self.last_name_label = tk.Label(self.last_name_frame, text="Last Name:", font=("Helvetica", 13), bg=colorNum)
         self.last_name_label.pack(side="left", padx=(20, 0))
 
         self.last_name_entry = ttk.Entry(self.last_name_frame)
         self.last_name_entry.pack(side="right", padx=(0, 20))
 
         # ID Number
-        self.id_num_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height)
+        self.id_num_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height, bg=colorNum)
         self.id_num_frame.pack_propagate(False)
         self.id_num_frame.pack()
 
-        self.id_num_label = ttk.Label(self.id_num_frame, text="ID Number:", font=("Helvetica", 13))
+        self.id_num_label = tk.Label(self.id_num_frame, text="ID Number:", font=("Helvetica", 13), bg=colorNum)
         self.id_num_label.pack(side="left", padx=(20, 0))
 
         self.id_num_entry = ttk.Entry(self.id_num_frame)
         self.id_num_entry.pack(side="right", padx=(0, 20))
 
         # Sex
-        self.sex_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height)
+        self.sex_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height, bg=colorNum)
         self.sex_frame.pack_propagate(False)
         self.sex_frame.pack()
 
-        self.sex_label = ttk.Label(self.sex_frame, text="Sex:", font=("Helvetica", 13))
+        self.sex_label = tk.Label(self.sex_frame, text="Sex:", font=("Helvetica", 13), bg=colorNum)
         self.sex_label.pack(side="left", padx=(20, 0))
 
         values = ["Male", "Female"]
@@ -325,11 +329,11 @@ class Frame3:
         self.sex_cb.pack(side="right", padx=(0, 20))
 
         # Year Level
-        self.year_level_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height)
+        self.year_level_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height, bg=colorNum)
         self.year_level_frame.pack_propagate(False)
         self.year_level_frame.pack()
 
-        self.year_level_label = ttk.Label(self.year_level_frame, text="Year Level:", font=("Helvetica", 13))
+        self.year_level_label = tk.Label(self.year_level_frame, text="Year Level:", font=("Helvetica", 13), bg=colorNum)
         self.year_level_label.pack(side="left", padx=(20, 0))
 
         values = ["1st Year", "2nd Year", "3rd Year", "4th Year"]
@@ -337,11 +341,11 @@ class Frame3:
         self.year_level_cb.pack(side="right", padx=(0, 20))
 
         # College Code
-        self.college_code_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height)
+        self.college_code_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height, bg=colorNum)
         self.college_code_frame.pack_propagate(False)
         self.college_code_frame.pack()
 
-        self.college_code_label = ttk.Label(self.college_code_frame, text="College:", font=("Helvetica", 13))
+        self.college_code_label = tk.Label(self.college_code_frame, text="College:", font=("Helvetica", 13), bg=colorNum)
         self.college_code_label.pack(side="left", padx=(20, 0))
 
         collegeData = load_data("./database/colleges.csv")
@@ -355,11 +359,11 @@ class Frame3:
 
 
         # Program Code
-        self.program_code_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height)
+        self.program_code_frame = tk.Frame(self.entry_frame, width=290, height=self.entry_frame_height, bg=colorNum)
         self.program_code_frame.pack_propagate(False)
         self.program_code_frame.pack()
 
-        self.program_code_label = ttk.Label(self.program_code_frame, text="Program:", font=("Helvetica", 13))
+        self.program_code_label = tk.Label(self.program_code_frame, text="Program:", font=("Helvetica", 13), bg=colorNum)
         self.program_code_label.pack(side="left", padx=(20, 0))
 
         programValues = []
@@ -395,11 +399,11 @@ class Frame3:
             values.append(e.get())
 
         # Name Error
-        for c in values[FNAME]:
+        for c in values[FNAME].replace(" ", ""):
             if not c.isalpha():
                 self.alert_message("Input Error", "First Name must not contain digits or any symbols.")
                 return
-        for c in values[LNAME]:
+        for c in values[LNAME].replace(" ", ""):
             if not c.isalpha():
                 self.alert_message("Input Error", "Last Name must not contain digits or any symbols.")
                 return
@@ -449,11 +453,11 @@ class Frame4:
     def __init__(self, app):
         self.app = app
 
-        self.frame4 = tk.Frame(app.getRoot())
+        self.frame4 = tk.Frame(app.getRoot(), bg=app.getColor(0))
         self.frame4.pack()
 
         # Search By
-        self.search_frame = tk.Frame(self.frame4, width=150, height=20)
+        self.search_frame = tk.Frame(self.frame4, width=150, height=20, bg=app.getColor(1))
         self.search_frame.pack_propagate(False)
         self.search_frame.pack(pady=(10,0))
 
@@ -466,7 +470,7 @@ class Frame4:
         self.search_cb.set("First Name")
 
         # Sort By
-        self.sort_frame = tk.Frame(self.frame4, width=150, height=20)
+        self.sort_frame = tk.Frame(self.frame4, width=150, height=20, bg=app.getColor(1))
         self.sort_frame.pack_propagate(False)
         self.sort_frame.pack(pady=(10,0))
 
