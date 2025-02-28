@@ -9,12 +9,12 @@ import main
 
 class MiniProfile:
     def __init__(self, app, master, student):
-        frame = tk.Frame(master, width=330, height=80)
+        frame = tk.Frame(master, bg="white", width=330, height=80)
         frame.pack_propagate(False)
         frame.pack(pady=5)
         frame.bind("<Button-1>", lambda event: [ app.setMainStud(student), app.transition_frames(app.frame2_obj)])
 
-        canvas = tk.Canvas(frame, bg="lime", width=50, height=50)
+        canvas = tk.Canvas(frame, bg="white", width=50, height=50)
         canvas.pack(side="left", padx=(40, 0))
         image = Image.open("./assets/image.jpg")
         image = image.resize((53, 53))
@@ -22,18 +22,19 @@ class MiniProfile:
         canvas.create_image(0, 0, image=photo, anchor=tk.NW)
         canvas.image = photo
 
+        canvas.create_oval(-3, -3, 56, 56, outline="white", width=10)
 
-        student_info = tk.Frame(frame)
+        student_info = tk.Frame(frame, bg="white")
         student_info.pack(side="left", padx=40)
 
-        nameframe = tk.Frame(student_info)
+        nameframe = tk.Frame(student_info, bg="white")
         nameframe.pack()
-        name = tk.Label(nameframe, text=student[FNAME] + " " + student[LNAME], font=("Helvetica", 12))
+        name = tk.Label(nameframe, text=student[FNAME] + " " + student[LNAME], font=("Helvetica", 12), bg="white")
         name.pack(side="left")
 
-        idframe = tk.Frame(student_info)
+        idframe = tk.Frame(student_info, bg="white")
         idframe.pack()
-        self.id = tk.Label(student_info, text=str(student[ID])[:4] + "-" + str(student[ID])[4:8])
+        self.id = tk.Label(student_info, text=str(student[ID])[:4] + "-" + str(student[ID])[4:8], bg="white")
         self.id.pack(side="left")
 
 class Frame1:
@@ -45,26 +46,26 @@ class Frame1:
         self.create_widgets(app)
 
     def create_widgets(self, app):
-        self.frame1 = tk.Frame(app.getRoot(), bg="grey", width=390, height=590)
+        self.frame1 = tk.Frame(app.getRoot(), width=390, height=590)
         self.frame1.pack_propagate(False)
         # self.frame1.pack()
 
-        self.top_frame = tk.Frame(master=self.frame1, bg="lightgreen", width=380, height=50)
+        self.top_frame = tk.Frame(master=self.frame1, width=380, height=50)
         self.top_frame.pack_propagate(False)
         self.top_frame_container = tk.Frame(self.top_frame)
         self.search_entry = ttk.Entry(master=self.top_frame_container, font=("Helvetica", 15), textvariable=self.entry_str_var)
         self.top_frame_container.pack()
         self.top_frame.pack(pady=20)
 
-        self.bot_frame = tk.Frame(master=self.frame1, bg="lightgreen", width=380, height=600)
+        self.bot_frame = tk.Frame(master=self.frame1, width=380, height=600)
         self.bot_frame.pack_propagate(False)
         self.bot_frame.pack()
 
-        self.canvas1 = tk.Canvas(self.bot_frame, bg="pink", width=380, height=400)
+        self.canvas1 = tk.Canvas(self.bot_frame, width=380, height=400)
         self.scrollbar = ttk.Scrollbar(master=self.bot_frame, orient='vertical', command=self.canvas1.yview)
         self.canvas1.configure(yscrollcommand=self.scrollbar.set)
 
-        self.scrollable_frame = tk.Frame(self.canvas1, bg="lightblue")
+        self.scrollable_frame = tk.Frame(self.canvas1)
         self.scrollable_frame.bind(
             "<Configure>",
             lambda e: self.canvas1.configure(
@@ -85,10 +86,10 @@ class Frame1:
         
         # for i in range(14):
         #     MiniProfile(self.scrollable_frame)
-            # tk.Label(self.scrollable_frame, text=f"Label {i}", bg="lightblue").pack()
+            # tk.Label(self.scrollable_frame, text=f"Label {i}").pack()
         # for i in range(14):
         #     MiniProfile(self.scrollable_frame)
-            # tk.Label(self.scrollable_frame, text=f"Label {i}", bg="lightblue").pack()
+            # tk.Label(self.scrollable_frame, text=f"Label {i}").pack()
 
 
     def on_entry_updated(self, *args):
@@ -143,26 +144,26 @@ class Frame1:
 class Frame2:
     def __init__(self, app):
         self.app = app
-        self.frame2 = tk.Frame(app.getRoot(), bg="grey", width=390, height=590)
+        self.frame2 = tk.Frame(app.getRoot(), width=390, height=590)
         self.frame2.pack_propagate(False)
         # self.frame2.pack()
 
-        self.header = tk.Frame(self.frame2, bg="lightblue", width=390, height=50)
+        self.header = tk.Frame(self.frame2, width=390, height=50)
         self.header.pack_propagate(False)
         self.header.pack()
 
-        self.back_button = ttk.Button(self.header, width=3, command=lambda: app.transition_frames(app.frame1_obj))
+        self.back_button = ttk.Button(self.header, text="Back", width=5, command=lambda: app.transition_frames(app.frame1_obj))
         self.back_button.pack(side="left", padx=10)
 
-        self.delete_button = ttk.Button(self.header, width=3)
+        self.delete_button = ttk.Button(self.header, text="Delete", width=6)
         self.delete_button.pack(side="right", padx=10)
 
-        self.body1 = tk.Frame(self.frame2, bg="lightgreen", width=390, height=300)
+        self.body1 = tk.Frame(self.frame2, width=390, height=300)
         self.body1.pack_propagate(False)
         self.body1.pack()
 
         # Image PFP
-        self.canvas2 = tk.Canvas(self.body1, width=175, height=175, bg="pink", highlightthickness=0)
+        self.canvas2 = tk.Canvas(self.body1, width=175, height=175, highlightthickness=0)
         self.canvas2.pack(pady=20)
 
         image = Image.open("./assets/image.jpg")
@@ -172,31 +173,31 @@ class Frame2:
         self.canvas2.create_image(87.5, 87.5, image=photo, anchor=tk.CENTER)
         self.canvas2.image = photo  # Keep a reference to avoid garbage collection
 
-        self.canvas2.create_oval(-50, -50, 225, 225, outline="lightgreen", width=100)
+        self.canvas2.create_oval(-50, -50, 225, 225, outline="#F0F0F0", width=100)
 
         # Full Name
         self.full_name_var = tk.StringVar(value="Empty")
-        self.full_name = tk.Label(self.body1, bg=app.getBg(), textvariable=self.full_name_var, font=("Helvetica", 16))
+        self.full_name = tk.Label(self.body1, textvariable=self.full_name_var, font=("Helvetica", 16))
         self.full_name.pack()
 
         # ID Number
         self.id_var = tk.StringVar(value="0000-0000")
-        self.id = tk.Label(self.body1, bg=app.getBg(), textvariable=self.id_var, font=("Helvetica", 10))
+        self.id = tk.Label(self.body1, textvariable=self.id_var, font=("Helvetica", 10))
         self.id.pack()
 
         # Border
-        self.border = tk.Canvas(self.body1, width=340, height=10, bg=app.getBg(), highlightthickness=0)
+        self.border = tk.Canvas(self.body1, width=340, height=10, highlightthickness=0)
         self.border.pack(side="bottom")
 
         self.border.create_line(0, 5, 340, 5, width=3)
 
         # BODY 2
-        self.body2 = tk.Frame(self.frame2, width=390, height=250, bg="pink")
+        self.body2 = tk.Frame(self.frame2, width=390, height=250, )
         self.body2.pack_propagate(False)
         self.body2.pack()
 
         # Sex
-        self.sex_frame = tk.Frame(self.body2, bg="lightblue", width=350, height=40)
+        self.sex_frame = tk.Frame(self.body2, width=350, height=40)
         self.sex_frame.pack_propagate(False)
         self.sex_frame.pack(pady=(40, 0))
 
@@ -207,7 +208,7 @@ class Frame2:
         self.sex_value.pack(side="right", padx=50)
 
         # Year Level
-        self.year_frame = tk.Frame(self.body2, bg="lightblue", width=350, height=40)
+        self.year_frame = tk.Frame(self.body2, width=350, height=40)
         self.year_frame.pack_propagate(False)
         self.year_frame.pack()
 
@@ -218,22 +219,22 @@ class Frame2:
         self.year_value.pack(side="right", padx=50)
 
         # Program Code
-        self.program_frame = tk.Frame(self.body2, bg="lightblue", width=350, height=40)
+        self.program_frame = tk.Frame(self.body2, width=350, height=40)
         self.program_frame.pack_propagate(False)
         self.program_frame.pack()
 
         self.program_label = tk.Label(self.program_frame, text="Program Code")
-        self.program_label.pack(side="left", padx=50)
+        self.program_label.pack(side="left", padx=(50,0))
         self.program_value_var = tk.StringVar(value="")
         self.program_value = tk.Label(self.program_frame, textvariable=self.program_value_var)
-        self.program_value.pack(side="right", padx=50)
+        self.program_value.pack(side="right", padx=(0,50))
 
     def update_stud_info_values(self):
         self.full_name_var.set(self.app.getMainStud()[FNAME] + " " + self.app.getMainStud()[LNAME])
         self.id_var.set(str(self.app.getMainStud()[ID])[:4] + "-" + str(self.app.getMainStud()[ID])[4:8])
         self.sex_value_var.set(self.app.getMainStud()[SEX])
         self.year_value_var.set(self.app.getMainStud()[YRLVL] + " Year")
-        self.program_value_var.set(self.app.getMainStud()[PCODE] + "({})".format(self.app.getMainStud()[CCODE]))
+        self.program_value_var.set(self.app.getMainStud()[PCODE] + " ({})".format(self.app.getMainStud()[CCODE]))
 
 
     def transition(self):
@@ -246,22 +247,22 @@ class Frame2:
 class Frame3:
     def __init__(self, app):
         self.app = app
-        self.frame3 = tk.Frame(app.getRoot(), bg="grey", width=390, height=590)
+        self.frame3 = tk.Frame(app.getRoot(), width=390, height=590)
         self.frame3.pack_propagate(False)
 
-        self.header = tk.Frame(self.frame3, bg="lightblue", width=390, height=50)
+        self.header = tk.Frame(self.frame3, width=390, height=50)
         self.header.pack_propagate(False)
         self.header.pack()
 
-        self.back_button = ttk.Button(self.header, width=3, command=lambda: app.transition_frames(app.frame1_obj))
+        self.back_button = ttk.Button(self.header, text="Back", width=5, command=lambda: app.transition_frames(app.frame1_obj))
         self.back_button.pack(side="left", padx=10)
 
-        self.body1 = tk.Frame(self.frame3, bg="lightgreen", width=390, height=540)
+        self.body1 = tk.Frame(self.frame3, width=390, height=540)
         self.body1.pack_propagate(False)
         self.body1.pack()
 
         # Image PFP
-        self.canvas2 = tk.Canvas(self.body1, width=175, height=175, bg="pink", highlightthickness=0)
+        self.canvas2 = tk.Canvas(self.body1, width=175, height=175, highlightthickness=0)
         self.canvas2.pack(pady=20)
 
         image = Image.open("./assets/image.jpg")
@@ -271,11 +272,11 @@ class Frame3:
         self.canvas2.create_image(87.5, 87.5, image=photo, anchor=tk.CENTER)
         self.canvas2.image = photo  # Keep a reference to avoid garbage collection
 
-        self.canvas2.create_oval(-50, -50, 225, 225, outline="lightgreen", width=100)
+        self.canvas2.create_oval(-50, -50, 225, 225, outline="#F0F0F0", width=100)
 
         # Frame for Entries
         self.entry_frame_height = 40
-        self.entry_frame = tk.Frame(self.body1, bg="blue", width=290, height=200)
+        self.entry_frame = tk.Frame(self.body1, width=290, height=200)
         self.entry_frame.pack()
 
         # First Name
@@ -343,7 +344,11 @@ class Frame3:
         self.college_code_label = ttk.Label(self.college_code_frame, text="College:", font=("Helvetica", 13))
         self.college_code_label.pack(side="left", padx=(20, 0))
 
-        collegeValues = list(load_data_json("./database/colleges.json").keys())
+        collegeData = load_data("./database/colleges.csv")
+        collegeValues = []
+        for i in collegeData:
+            if i[0] not in collegeValues:
+                collegeValues.append(i[0])
         self.college_code_cb = ttk.Combobox(self.college_code_frame, values=collegeValues, state='readonly', width=17)
         self.college_code_cb.pack(side="right", padx=(0, 20))
 
@@ -372,7 +377,11 @@ class Frame3:
     def update_program_values(self, event):
         self.program_code_cb.set('')
         college = self.college_code_cb.get()
-        programValues = list(load_data_json("./database/colleges.json")[college])
+        programValues = []
+        collegeData = load_data("./database/colleges.csv")
+        for i in collegeData:
+            if (college == i[0]):
+                programValues.append(i[1])
         self.program_code_cb['values'] = programValues
 
     def submit_func(self):
@@ -384,13 +393,35 @@ class Frame3:
                 self.alert_message("Input Error", "All fields must be filled out.")
                 return
             values.append(e.get())
-        if "-" in values[3]:
-            values[3] = values[3].replace("-", "")
 
-        if self.app.get_student(values[3]) != None:
-            self.alert_message("Input Error", "Student with {} ID already exists".format(values[3]))
+        # Name Error
+        for c in values[FNAME]:
+            if not c.isalpha():
+                self.alert_message("Input Error", "First Name must not contain digits or any symbols.")
+                return
+        for c in values[LNAME]:
+            if not c.isalpha():
+                self.alert_message("Input Error", "Last Name must not contain digits or any symbols.")
+                return
+
+        # ID Number error
+        if "-" in values[ID]:
+            values[ID] = values[ID].replace("-", "")
+
+        for c in values[ID]:
+            if c.isalpha():
+                self.alert_message("Input Error", "ID Number must only contain digits or '-'.")
+                return
+        
+        if len(values[ID]) != 8:
+            self.alert_message("Input Error", "ID Numbers must be 8 digits.")
             return
-        values[4] = values[4][:3]
+
+        if self.app.get_student(values[ID]) != None:
+            self.alert_message("Input Error", "Student with {} ID already exists.".format(values[3]))
+            return
+        
+        values[YRLVL] = values[YRLVL][:3]
         studdb = self.app.getStudentDb()
         studdb.append(values)
         write_data("./database/students.csv", studdb)

@@ -16,6 +16,8 @@ class StudentProfileApp:
         self.students_database = dm.load_data("./database/students.csv")
         self.current_year = dt.datetime.now().year
 
+        self.main_student = None
+
         self.search_setting = 0
 
         self.create_main_frames()

@@ -22,21 +22,3 @@ def load_data(filename):
         header = next(reader)
         return list(reader)
     
-
-# data = [["Emmeline","Christina","Female",20239372,"2nd","CCS","BSCS"]]
-# loc = "./database/students.csv"
-# # write_data(loc, data)
-
-# print(load_data(loc))
-    
-
-def write_data_json(filename, newfile):
-    if os.path.exists(filename):
-        with open(filename, 'w') as f:
-            json.dump(newfile, f, indent=4)    
-def load_data_json(filename):
-    if os.path.exists(filename):
-        with open(filename, 'r') as f:
-            data = json.load(f)
-    return data 
-
