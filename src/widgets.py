@@ -24,7 +24,6 @@ class MiniProfile:
             l.pack(padx=(3, 0), side="left")
             l.bind("<Button-1>", lambda event: [ app.setMainStud(student), app.transition_frames(app.frame2_obj)])
 
-
 class Frame1:
     def __init__(self, app):
         self.app = app
@@ -36,7 +35,6 @@ class Frame1:
     def create_widgets(self, app):
         self.frame1 = tk.Frame(app.getRoot(), width=682.5, height=590, bg=self.app.getColor(0))
         self.frame1.pack_propagate(False)
-        # self.frame1.pack()
 
         self.top_frame = tk.Frame(master=self.frame1, width=665, height=50, bg=app.getColor(0))
         self.top_frame.pack_propagate(False)
@@ -56,7 +54,7 @@ class Frame1:
             self.label_ = tk.Label(master=self.labels_frame, bg=app.getColor(2), text=i)
             self.label_.pack(side="left", padx=(labels[i],0))
 
-        self.bot_frame = tk.Frame(master=self.frame1, width=665, height=600)
+        self.bot_frame = tk.Frame(master=self.frame1, width=665, height=600, bg="pink")
         self.bot_frame.pack_propagate(False)
         self.bot_frame.pack(pady=(3,0))
 
@@ -83,21 +81,11 @@ class Frame1:
         self.add_student_button.pack(side="left")
         self.search_entry.pack(side="left", padx=100)
         self.settings_button.pack(side="left")
-        
-        # for i in range(14):
-        #     MiniProfile(self.scrollable_frame)
-            # tk.Label(self.scrollable_frame, text=f"Label {i}").pack()
-        # for i in range(14):
-        #     MiniProfile(self.scrollable_frame)
-            # tk.Label(self.scrollable_frame, text=f"Label {i}").pack()
 
 
     def on_entry_updated(self, *args):
         for widget in self.scrollable_frame.winfo_children():
             widget.pack_forget()
-
-        # self.scrollbar.pack(side="right", fill="y")
-        # self.canvas1.pack(side="left", fill="both", expand=True)
 
         SEARCH_TYPE = self.app.getSearchSet()
         temp = []
@@ -137,9 +125,6 @@ class Frame1:
 
     def getMainFrame(self):
         return self.frame1
-
-
-
 
 class Frame2:
     def __init__(self, app):
