@@ -105,8 +105,6 @@ class Frame1:
         if not self.entry_str_var.get():
             for widget in self.scrollable_frame.winfo_children():
                 widget.pack_forget()
-            # self.scrollbar.pack_forget()
-            # self.canvas1.pack_forget()
             self.acquired_student_profiles = self.app.getStudentDb()
             self.show_list()
 
