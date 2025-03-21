@@ -11,10 +11,9 @@ class MiniProfile:
     def __init__(self, app, master, student):
         frame = tk.Frame(master, bg=app.getColor(2), width=620, height=30)
         frame.pack_propagate(False)
-        frame.pack(pady=5, padx=(10, 0))
+        frame.pack(pady=5, padx=10)
         frame.bind("<Button-1>", lambda event: [ app.setMainStud(student), app.transition_frames(app.frame2_obj)])
 
-        x = [3, 6,]
         for i in range(0, 7):
             t = student[i]
             if i == ID:
@@ -31,9 +30,10 @@ class Frame1:
         self.entry_str_var.trace_add(mode="write", callback=self.on_entry_updated)
         self.acquired_student_profiles = app.getStudentDb()
         self.create_widgets(app)
+        self.page = 1
 
     def create_widgets(self, app):
-        self.frame1 = tk.Frame(app.getRoot(), width=682.5, height=590, bg=self.app.getColor(0))
+        self.frame1 = tk.Frame(app.getRoot(), width=682.5, height=640, bg=self.app.getColor(0))
         self.frame1.pack_propagate(False)
 
         self.top_frame = tk.Frame(master=self.frame1, width=665, height=50, bg=app.getColor(0))
@@ -49,32 +49,14 @@ class Frame1:
 
         self.labels_frame = tk.Frame(master=self.top_row_frame, bg=app.getColor(2))
         self.labels_frame.pack(padx=(0, 10), side="left")
-        labels = {"First N":35, "Last N":47, "Sex":55, "ID#":66, "Year Level":43, "College":35, "Code":45}
+        labels = {"First N":43, "Last N":47, "Sex":55, "ID#":66, "Year Level":43, "College":35, "Code":45}
         for i in list(labels.keys()):
             self.label_ = tk.Label(master=self.labels_frame, bg=app.getColor(2), text=i)
             self.label_.pack(side="left", padx=(labels[i],0))
 
-        self.bot_frame = tk.Frame(master=self.frame1, width=665, height=600, bg="pink")
+        self.bot_frame = tk.Frame(master=self.frame1, width=665, height=480, bg=app.getColor(1))
         self.bot_frame.pack_propagate(False)
-        self.bot_frame.pack(pady=(3,0))
-
-        self.canvas1 = tk.Canvas(self.bot_frame, width=680, height=400, bg=app.getColor(1))
-        self.scrollbar = ttk.Scrollbar(master=self.bot_frame, orient='vertical', command=self.canvas1.yview)
-        self.canvas1.configure(yscrollcommand=self.scrollbar.set)
-
-        self.scrollable_frame = tk.Frame(self.canvas1, bg=app.getColor(1))
-        self.scrollable_frame.bind(
-            "<Configure>",
-            lambda e: self.canvas1.configure(
-                scrollregion=self.canvas1.bbox("all")
-            )
-        )
-        self.canvas1.configure(bg=app.getColor(1))
-        self.canvas1.create_window((0, 0), window=self.scrollable_frame, anchor="n", width=620)
-        self.scrollbar.pack(side="right", fill="y")
-        self.canvas1.pack(side="left", fill="both", expand=True)
-
-        self.canvas1.bind_all("<MouseWheel>", lambda event: self.canvas1.yview_scroll(int(-1*(event.delta/120)), "units"))
+        self.bot_frame.pack()
 
         self.add_student_button = ttk.Button(self.top_frame_container, width=5, text="Add", command=lambda: app.transition_frames(app.frame3_obj))
         self.settings_button = ttk.Button(self.top_frame_container, text="Settings", command=lambda: app.transition_frames(app.frame4_obj))
@@ -84,7 +66,12 @@ class Frame1:
 
 
     def on_entry_updated(self, *args):
-        for widget in self.scrollable_frame.winfo_children():
+        if not self.entry_str_var.get():
+            self.acquired_student_profiles = self.app.getStudentDb()
+            self.show_list()
+            return 0
+
+        for widget in self.bot_frame.winfo_children():
             widget.pack_forget()
 
         SEARCH_TYPE = self.app.getSearchSet()
@@ -100,21 +87,18 @@ class Frame1:
 
    
         for student in temp:
-            MiniProfile(self.app, self.scrollable_frame, student)
+            MiniProfile(self.app, self.bot_frame, student)
 
-        if not self.entry_str_var.get():
-            for widget in self.scrollable_frame.winfo_children():
-                widget.pack_forget()
-            self.acquired_student_profiles = self.app.getStudentDb()
-            self.show_list()
+
 
 
 
     def show_list(self):
-        for widget in self.scrollable_frame.winfo_children():
+        for widget in self.bot_frame.winfo_children():
             widget.pack_forget()
-        for student in self.acquired_student_profiles:
-            MiniProfile(self.app, self.scrollable_frame, student)
+        for i in range((self.page - 1) * 12, self.page * 12):
+            if i < len(self.acquired_student_profiles):
+                MiniProfile(self.app, self.bot_frame, self.acquired_student_profiles[i])
 
     def transition(self):
         self.frame1.pack()
