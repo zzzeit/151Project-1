@@ -1,4 +1,5 @@
 import tkinter as tk
+from math import ceil
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
@@ -29,8 +30,9 @@ class Frame1:
         self.entry_str_var = tk.StringVar()
         self.entry_str_var.trace_add(mode="write", callback=self.on_entry_updated)
         self.acquired_student_profiles = app.getStudentDb()
-        self.create_widgets(app)
         self.page = 1
+        self.maxPage = ceil(len(self.acquired_student_profiles)/12)
+        self.create_widgets(app)
 
     def create_widgets(self, app):
         self.frame1 = tk.Frame(app.getRoot(), width=682.5, height=640, bg=self.app.getColor(0))
@@ -42,6 +44,12 @@ class Frame1:
         self.search_entry = ttk.Entry(master=self.top_frame_container, width=30, font=("Helvetica", 15), textvariable=self.entry_str_var)
         self.top_frame_container.pack()
         self.top_frame.pack(pady=(20,0))
+
+        self.add_student_button = ttk.Button(self.top_frame_container, width=5, text="Add", command=lambda: app.transition_frames(app.frame3_obj))
+        self.settings_button = ttk.Button(self.top_frame_container, text="Settings", command=lambda: app.transition_frames(app.frame4_obj))
+        self.add_student_button.pack(side="left")
+        self.search_entry.pack(side="left", padx=100)
+        self.settings_button.pack(side="left")
 
         self.top_row_frame = tk.Frame(master=self.frame1, width=665 , height=25, bg=app.getColor(2))
         self.top_row_frame.pack_propagate(False)
@@ -58,11 +66,27 @@ class Frame1:
         self.bot_frame.pack_propagate(False)
         self.bot_frame.pack()
 
-        self.add_student_button = ttk.Button(self.top_frame_container, width=5, text="Add", command=lambda: app.transition_frames(app.frame3_obj))
-        self.settings_button = ttk.Button(self.top_frame_container, text="Settings", command=lambda: app.transition_frames(app.frame4_obj))
-        self.add_student_button.pack(side="left")
-        self.search_entry.pack(side="left", padx=100)
-        self.settings_button.pack(side="left")
+        # Page Number
+        self.page_frame = tk.Frame(master=self.frame1, width=50, height=30, bg=app.getColor(2))
+        self.page_label2_var = tk.StringVar()
+        self.page_entry_var = tk.StringVar()
+        self.page_frame.pack(side="top", pady=5)
+
+        self.prev_button = ttk.Button(master=self.page_frame, width=1, text="<", command=self.prev_page)
+        self.next_button = ttk.Button(master=self.page_frame, width=1, text=">", command=self.next_page)
+        self.page_label1 = tk.Label(master=self.page_frame, text="Page", bg=app.getColor(2))
+        self.page_label2 = tk.Label(master=self.page_frame, bg=app.getColor(2), textvariable=self.page_label2_var)
+        self.page_entry = ttk.Entry(master=self.page_frame, width=3, textvariable=self.page_entry_var, justify="center")
+        
+        self.prev_button.pack(side="left")
+        self.page_label1.pack(side="left", padx=3)
+        self.page_entry.pack(side="left")
+        self.page_label2.pack(side="left", padx=3)
+        self.next_button.pack(side="left")
+
+
+        self.page_label2_var.set(f"of {self.maxPage}")
+        self.page_entry_var.set("1")
 
 
     def on_entry_updated(self, *args):
@@ -90,15 +114,24 @@ class Frame1:
             MiniProfile(self.app, self.bot_frame, student)
 
 
-
-
-
     def show_list(self):
         for widget in self.bot_frame.winfo_children():
             widget.pack_forget()
         for i in range((self.page - 1) * 12, self.page * 12):
             if i < len(self.acquired_student_profiles):
                 MiniProfile(self.app, self.bot_frame, self.acquired_student_profiles[i])
+
+    def prev_page(self):
+        if self.page > 1:
+            self.page -= 1
+            self.show_list()
+            self.page_entry_var.set(f"{self.page}")
+
+    def next_page(self):
+        if self.page < self.maxPage:
+            self.page += 1
+            self.show_list()
+            self.page_entry_var.set(f"{self.page}")
 
     def transition(self):
         self.frame1.pack()
