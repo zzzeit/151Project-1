@@ -70,6 +70,7 @@ class Frame1:
         self.page_frame = tk.Frame(master=self.frame1, width=50, height=30, bg=app.getColor(2))
         self.page_label2_var = tk.StringVar()
         self.page_entry_var = tk.StringVar()
+        self.page_entry_var.trace_add("write", callback=self.page_entry_upd)
         self.page_frame.pack(side="top", pady=5)
 
         self.prev_button = ttk.Button(master=self.page_frame, width=1, text="<", command=self.prev_page)
@@ -113,8 +114,19 @@ class Frame1:
         for student in temp:
             MiniProfile(self.app, self.bot_frame, student)
 
+    def page_entry_upd(self, *args):
+        ev = self.page_entry_var.get() # entry value
+        if ev.isnumeric():
+            if (int(ev) >= 1 and int(ev) <= self.maxPage):
+                self.page = int(ev)
+            else:
+                self.page = 1
+                self.page_entry_var.set("1")
+            self.show_list()
 
     def show_list(self):
+        self.maxPage = ceil(len(self.acquired_student_profiles)/12)
+        self.page_label2_var.set(f"of {self.maxPage}")
         for widget in self.bot_frame.winfo_children():
             widget.pack_forget()
         for i in range((self.page - 1) * 12, self.page * 12):
@@ -454,7 +466,9 @@ class Frame3:
 class Frame4:
     def __init__(self, app):
         self.app = app
+        self.create_widgets(app)
 
+    def create_widgets(self, app):
         self.frame4 = tk.Frame(app.getRoot(), bg=app.getColor(0))
         self.frame4.pack()
 
