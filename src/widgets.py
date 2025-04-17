@@ -29,9 +29,9 @@ class Frame1: # CRUDL FRAME
         self.app = app
         self.entry_str_var = tk.StringVar()
         self.entry_str_var.trace_add(mode="write", callback=self.on_entry_updated)
-        self.acquired_student_profiles = app.getStudentDb()
+        self.acquired_list = app.getStudentDb()
         self.page = 1
-        self.maxPage = ceil(len(self.acquired_student_profiles)/12)
+        self.maxPage = ceil(len(self.acquired_list)/12)
         self.create_widgets(app)
 
     def create_widgets(self, app):
@@ -92,7 +92,7 @@ class Frame1: # CRUDL FRAME
 
     def on_entry_updated(self, *args):
         if not self.entry_str_var.get():
-            self.acquired_student_profiles = self.app.getStudentDb()
+            self.acquired_list = self.app.getStudentDb()
             self.show_list()
             return 0
 
@@ -101,7 +101,7 @@ class Frame1: # CRUDL FRAME
 
         SEARCH_TYPE = self.app.getSearchSet()
         temp = []
-        for student in self.acquired_student_profiles:
+        for student in self.acquired_list:
             match = True
             for i, letter in enumerate(self.entry_str_var.get()):
                 if i >= len(student[SEARCH_TYPE]) or letter.upper() != student[SEARCH_TYPE][i].upper():
@@ -125,13 +125,13 @@ class Frame1: # CRUDL FRAME
             self.show_list()
 
     def show_list(self):
-        self.maxPage = ceil(len(self.acquired_student_profiles)/12)
+        self.maxPage = ceil(len(self.acquired_list)/12)
         self.page_label2_var.set(f"of {self.maxPage}")
         for widget in self.bot_frame.winfo_children():
             widget.pack_forget()
         for i in range((self.page - 1) * 12, self.page * 12):
-            if i < len(self.acquired_student_profiles):
-                MiniProfile(self.app, self.bot_frame, self.acquired_student_profiles[i])
+            if i < len(self.acquired_list):
+                MiniProfile(self.app, self.bot_frame, self.acquired_list[i])
 
     def prev_page(self):
         if self.page > 1:
@@ -147,7 +147,7 @@ class Frame1: # CRUDL FRAME
 
     def transition(self):
         self.frame1.pack()
-        self.acquired_student_profiles = self.app.getStudentDb()
+        self.acquired_list = self.app.getStudentDb()
         self.show_list()
 
     def getMainFrame(self):
@@ -462,7 +462,7 @@ class Frame3:
     def transition(self):
         self.frame3.pack()
 
-class Frame4:
+class Frame4: # SETTINGS FRAME
     def __init__(self, app):
         self.app = app
         self.create_widgets(app)
@@ -470,6 +470,18 @@ class Frame4:
     def create_widgets(self, app):
         self.frame4 = tk.Frame(app.getRoot(), bg=app.getColor(0))
         self.frame4.pack()
+
+        # List
+        self.list_frame = tk.Frame(self.frame4, width=150, height=20)
+        self.list_frame.pack_propagate(False)
+        self.list_frame.pack(pady=(10, 0))
+
+        self.list_label = tk.Label(self.list_frame, text="List Mode: ")
+        self.list_label.pack(side="left")
+
+        self.list_cb = ttk.Combobox(self.list_frame, state='readonly', values=["Students", "Colleges"], width=8)
+        self.list_cb.pack(side="right")
+        self.list_cb.set("Students")
 
         # Search By
         self.search_frame = tk.Frame(self.frame4, width=150, height=20)
@@ -553,9 +565,12 @@ class Frame4:
 
     
     def done_button(self):
-        self.app.setSearchSet(self.searchValues[self.search_cb.get()])
-        self.app.sort_students(self.searchValues[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
-        self.app.transition_frames(self.app.frame1_obj)
+        if self.list_cb.get() == "Students":
+            self.app.setSearchSet(self.searchValues[self.search_cb.get()])
+            self.app.sort_students(self.searchValues[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
+            self.app.transition_frames(self.app.frame1_obj)
+        elif self.list_cb.get() == "Colleges":
+            pass
 
     def transition(self):
         self.frame4.pack()
