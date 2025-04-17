@@ -24,7 +24,7 @@ class MiniProfile:
             l.pack(padx=(3, 0), side="left")
             l.bind("<Button-1>", lambda event: [ app.setMainStud(student), app.transition_frames(app.frame2_obj)])
 
-class Frame1:
+class Frame1: # CRUDL FRAME
     def __init__(self, app):
         self.app = app
         self.entry_str_var = tk.StringVar()
@@ -258,6 +258,7 @@ class Frame2:
     def getMainFrame(self):
         return self.frame2
     
+# Add Studdent Frame
 class Frame3:
     def __init__(self, app):
         colorNum = app.getColor(2)
@@ -361,9 +362,8 @@ class Frame3:
         self.college_code_label = tk.Label(self.college_code_frame, text="College:", font=("Helvetica", 13), bg=colorNum)
         self.college_code_label.pack(side="left", padx=(20, 0))
 
-        collegeData = load_data("./database/colleges.csv")
         collegeValues = []
-        for i in collegeData:
+        for i in app.collegeData:
             if i[0] not in collegeValues:
                 collegeValues.append(i[0])
         self.college_code_cb = ttk.Combobox(self.college_code_frame, values=collegeValues, state='readonly', width=17)
@@ -395,8 +395,7 @@ class Frame3:
         self.program_code_cb.set('')
         college = self.college_code_cb.get()
         programValues = []
-        collegeData = load_data("./database/colleges.csv")
-        for i in collegeData:
+        for i in self.app.collegeData:
             if (college == i[0]):
                 programValues.append(i[1])
         self.program_code_cb['values'] = programValues
@@ -501,6 +500,57 @@ class Frame4:
         # Done
         self.done_button = ttk.Button(self.frame4, text="DONE", command=self.done_button)
         self.done_button.pack(pady=10)
+
+        # Add College Frame
+        self.AC_frame = tk.Frame(self.frame4, width=300, height=200, bg="pink")
+        self.AC_frame.pack(pady=(20, 0), side='top')
+
+        AC_frames = []
+        for i in range(0, 3):
+            AC_frames.append(tk.Frame(self.AC_frame, width=270, height=30, bg="green"))
+            AC_frames[i].pack_propagate(False)
+            AC_frames[i].pack(side='top', pady=(10, 0))
+
+        self.college_label = tk.Label(AC_frames[0], text="College", font=('helvetica', 15))
+        self.college_label.pack(side='left', padx=(0, 20))
+        self.college_entry = ttk.Entry(AC_frames[0], width=10, font=('helvetica', 15))
+        self.college_entry.pack(side='right')
+
+        self.course_code_label = tk.Label(AC_frames[1], text="Course Code", font=('helvetica', 15))
+        self.course_code_label.pack(side='left')
+        self.course_code_entry = ttk.Entry(AC_frames[1], width=10, font=('helvetica', 15))
+        self.course_code_entry.pack(side='right')
+
+        self.course_name_label = tk.Label(AC_frames[2], text="Course Name", font=('helvetica', 15))
+        self.course_name_label.pack(side='left')
+        self.course_name_entry = ttk.Entry(AC_frames[2], width=10, font=('helvetica', 15))
+        self.course_name_entry.pack(side='right')
+
+        self.add_button = ttk.Button(self.AC_frame,  text="ADD")
+        self.add_button.pack(side='top', pady=(10, 0))
+
+        # Remove College Frame
+        self.RC_Frame = tk.Frame(self.frame4, width=200, height=200, bg="cyan")
+        self.RC_Frame.pack(pady=(10,0))
+
+        RC_Frames = []
+        for i in range(0, 3):
+            RC_Frames.append(tk.Frame(self.RC_Frame, width=270, height=30))
+            RC_Frames[i].pack_propagate(False)
+            RC_Frames[i].pack(pady=(10,0))
+
+        self.rcollege_label = tk.Label(RC_Frames[0], text="College", font=('helvetica', 15))
+        self.rcollege_label.pack(side='left')
+        self.rcollege_cb = ttk.Combobox(RC_Frames[0], width=10, font=('helvetica', 15))
+        self.rcollege_cb.pack(side='right')
+
+        self.rcourse_code_label = tk.Label(RC_Frames[1], text="Course Code", font=('helvetica', 15))
+        self.rcourse_code_label.pack(side='left')
+        self.rcourse_code_cb = ttk.Combobox(RC_Frames[1], width=10, font=('helvetica', 15))
+        self.rcourse_code_cb.pack(side='right')
+
+        self.rcourse_name_label = tk.Label()
+
     
     def done_button(self):
         self.app.setSearchSet(self.searchValues[self.search_cb.get()])
