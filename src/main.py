@@ -14,6 +14,7 @@ class StudentProfileApp:
 
 
         self.students_database = dm.load_data("./database/students.csv")
+        self.collegeData = dm.load_data("./database/colleges.csv")
         self.current_year = dt.datetime.now().year
 
         self.main_student = None

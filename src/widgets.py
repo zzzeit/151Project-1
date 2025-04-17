@@ -1,4 +1,5 @@
 import tkinter as tk
+from math import ceil
 from tkinter import ttk
 from tkinter import messagebox
 from tkinter import filedialog
@@ -11,10 +12,9 @@ class MiniProfile:
     def __init__(self, app, master, student):
         frame = tk.Frame(master, bg=app.getColor(2), width=620, height=30)
         frame.pack_propagate(False)
-        frame.pack(pady=5, padx=(10, 0))
+        frame.pack(pady=5, padx=10)
         frame.bind("<Button-1>", lambda event: [ app.setMainStud(student), app.transition_frames(app.frame2_obj)])
 
-        x = [3, 6,]
         for i in range(0, 7):
             t = student[i]
             if i == ID:
@@ -24,19 +24,19 @@ class MiniProfile:
             l.pack(padx=(3, 0), side="left")
             l.bind("<Button-1>", lambda event: [ app.setMainStud(student), app.transition_frames(app.frame2_obj)])
 
-
-class Frame1:
+class Frame1: # CRUDL FRAME
     def __init__(self, app):
         self.app = app
         self.entry_str_var = tk.StringVar()
         self.entry_str_var.trace_add(mode="write", callback=self.on_entry_updated)
-        self.acquired_student_profiles = app.getStudentDb()
+        self.acquired_list = app.getStudentDb()
+        self.page = 1
+        self.maxPage = ceil(len(self.acquired_list)/12)
         self.create_widgets(app)
 
     def create_widgets(self, app):
-        self.frame1 = tk.Frame(app.getRoot(), width=682.5, height=590, bg=self.app.getColor(0))
+        self.frame1 = tk.Frame(app.getRoot(), width=682.5, height=640, bg=self.app.getColor(0))
         self.frame1.pack_propagate(False)
-        # self.frame1.pack()
 
         self.top_frame = tk.Frame(master=self.frame1, width=665, height=50, bg=app.getColor(0))
         self.top_frame.pack_propagate(False)
@@ -45,63 +45,63 @@ class Frame1:
         self.top_frame_container.pack()
         self.top_frame.pack(pady=(20,0))
 
+        self.add_student_button = ttk.Button(self.top_frame_container, width=5, text="Add", command=lambda: app.transition_frames(app.frame3_obj))
+        self.settings_button = ttk.Button(self.top_frame_container, text="Settings", command=lambda: app.transition_frames(app.frame4_obj))
+        self.add_student_button.pack(side="left")
+        self.search_entry.pack(side="left", padx=100)
+        self.settings_button.pack(side="left")
+
         self.top_row_frame = tk.Frame(master=self.frame1, width=665 , height=25, bg=app.getColor(2))
         self.top_row_frame.pack_propagate(False)
         self.top_row_frame.pack(pady=(10, 15))
 
         self.labels_frame = tk.Frame(master=self.top_row_frame, bg=app.getColor(2))
         self.labels_frame.pack(padx=(0, 10), side="left")
-        labels = {"First N":35, "Last N":47, "Sex":55, "ID#":66, "Year Level":43, "College":35, "Code":45}
+        labels = {"First N":43, "Last N":47, "Sex":55, "ID#":66, "Year Level":43, "College":35, "Code":45}
         for i in list(labels.keys()):
             self.label_ = tk.Label(master=self.labels_frame, bg=app.getColor(2), text=i)
             self.label_.pack(side="left", padx=(labels[i],0))
 
-        self.bot_frame = tk.Frame(master=self.frame1, width=665, height=600)
+        self.bot_frame = tk.Frame(master=self.frame1, width=665, height=480, bg=app.getColor(1))
         self.bot_frame.pack_propagate(False)
-        self.bot_frame.pack(pady=(3,0))
+        self.bot_frame.pack()
 
-        self.canvas1 = tk.Canvas(self.bot_frame, width=680, height=400, bg=app.getColor(1))
-        self.scrollbar = ttk.Scrollbar(master=self.bot_frame, orient='vertical', command=self.canvas1.yview)
-        self.canvas1.configure(yscrollcommand=self.scrollbar.set)
+        # Page Number
+        self.page_frame = tk.Frame(master=self.frame1, width=50, height=30, bg=app.getColor(2))
+        self.page_label2_var = tk.StringVar()
+        self.page_entry_var = tk.StringVar()
+        self.page_entry_var.trace_add("write", callback=self.page_entry_upd)
+        self.page_frame.pack(side="top", pady=5)
 
-        self.scrollable_frame = tk.Frame(self.canvas1, bg=app.getColor(1))
-        self.scrollable_frame.bind(
-            "<Configure>",
-            lambda e: self.canvas1.configure(
-                scrollregion=self.canvas1.bbox("all")
-            )
-        )
-        self.canvas1.configure(bg=app.getColor(1))
-        self.canvas1.create_window((0, 0), window=self.scrollable_frame, anchor="n", width=620)
-        self.scrollbar.pack(side="right", fill="y")
-        self.canvas1.pack(side="left", fill="both", expand=True)
-
-        self.canvas1.bind_all("<MouseWheel>", lambda event: self.canvas1.yview_scroll(int(-1*(event.delta/120)), "units"))
-
-        self.add_student_button = ttk.Button(self.top_frame_container, width=5, text="Add", command=lambda: app.transition_frames(app.frame3_obj))
-        self.settings_button = ttk.Button(self.top_frame_container, text="Settings", command=lambda: app.transition_frames(app.frame4_obj))
-        self.add_student_button.pack(side="left")
-        self.search_entry.pack(side="left", padx=100)
-        self.settings_button.pack(side="left")
+        self.prev_button = ttk.Button(master=self.page_frame, width=1, text="<", command=self.prev_page)
+        self.next_button = ttk.Button(master=self.page_frame, width=1, text=">", command=self.next_page)
+        self.page_label1 = tk.Label(master=self.page_frame, text="Page", bg=app.getColor(2))
+        self.page_label2 = tk.Label(master=self.page_frame, bg=app.getColor(2), textvariable=self.page_label2_var)
+        self.page_entry = ttk.Entry(master=self.page_frame, width=3, textvariable=self.page_entry_var, justify="center")
         
-        # for i in range(14):
-        #     MiniProfile(self.scrollable_frame)
-            # tk.Label(self.scrollable_frame, text=f"Label {i}").pack()
-        # for i in range(14):
-        #     MiniProfile(self.scrollable_frame)
-            # tk.Label(self.scrollable_frame, text=f"Label {i}").pack()
+        self.prev_button.pack(side="left")
+        self.page_label1.pack(side="left", padx=3)
+        self.page_entry.pack(side="left")
+        self.page_label2.pack(side="left", padx=3)
+        self.next_button.pack(side="left")
+
+
+        self.page_label2_var.set(f"of {self.maxPage}")
+        self.page_entry_var.set("1")
 
 
     def on_entry_updated(self, *args):
-        for widget in self.scrollable_frame.winfo_children():
-            widget.pack_forget()
+        if not self.entry_str_var.get():
+            self.acquired_list = self.app.getStudentDb()
+            self.show_list()
+            return 0
 
-        # self.scrollbar.pack(side="right", fill="y")
-        # self.canvas1.pack(side="left", fill="both", expand=True)
+        for widget in self.bot_frame.winfo_children():
+            widget.pack_forget()
 
         SEARCH_TYPE = self.app.getSearchSet()
         temp = []
-        for student in self.acquired_student_profiles:
+        for student in self.acquired_list:
             match = True
             for i, letter in enumerate(self.entry_str_var.get()):
                 if i >= len(student[SEARCH_TYPE]) or letter.upper() != student[SEARCH_TYPE][i].upper():
@@ -112,34 +112,46 @@ class Frame1:
 
    
         for student in temp:
-            MiniProfile(self.app, self.scrollable_frame, student)
+            MiniProfile(self.app, self.bot_frame, student)
 
-        if not self.entry_str_var.get():
-            for widget in self.scrollable_frame.winfo_children():
-                widget.pack_forget()
-            # self.scrollbar.pack_forget()
-            # self.canvas1.pack_forget()
-            self.acquired_student_profiles = self.app.getStudentDb()
+    def page_entry_upd(self, *args):
+        ev = self.page_entry_var.get() # entry value
+        if ev.isnumeric():
+            if (int(ev) >= 1 and int(ev) <= self.maxPage):
+                self.page = int(ev)
+            else:
+                self.page = 1
+                self.page_entry_var.set("1")
             self.show_list()
 
-
-
     def show_list(self):
-        for widget in self.scrollable_frame.winfo_children():
+        self.maxPage = ceil(len(self.acquired_list)/12)
+        self.page_label2_var.set(f"of {self.maxPage}")
+        for widget in self.bot_frame.winfo_children():
             widget.pack_forget()
-        for student in self.acquired_student_profiles:
-            MiniProfile(self.app, self.scrollable_frame, student)
+        for i in range((self.page - 1) * 12, self.page * 12):
+            if i < len(self.acquired_list):
+                MiniProfile(self.app, self.bot_frame, self.acquired_list[i])
+
+    def prev_page(self):
+        if self.page > 1:
+            self.page -= 1
+            self.show_list()
+            self.page_entry_var.set(f"{self.page}")
+
+    def next_page(self):
+        if self.page < self.maxPage:
+            self.page += 1
+            self.show_list()
+            self.page_entry_var.set(f"{self.page}")
 
     def transition(self):
         self.frame1.pack()
-        self.acquired_student_profiles = self.app.getStudentDb()
+        self.acquired_list = self.app.getStudentDb()
         self.show_list()
 
     def getMainFrame(self):
         return self.frame1
-
-
-
 
 class Frame2:
     def __init__(self, app):
@@ -246,6 +258,7 @@ class Frame2:
     def getMainFrame(self):
         return self.frame2
     
+# Add Studdent Frame
 class Frame3:
     def __init__(self, app):
         colorNum = app.getColor(2)
@@ -349,9 +362,8 @@ class Frame3:
         self.college_code_label = tk.Label(self.college_code_frame, text="College:", font=("Helvetica", 13), bg=colorNum)
         self.college_code_label.pack(side="left", padx=(20, 0))
 
-        collegeData = load_data("./database/colleges.csv")
         collegeValues = []
-        for i in collegeData:
+        for i in app.collegeData:
             if i[0] not in collegeValues:
                 collegeValues.append(i[0])
         self.college_code_cb = ttk.Combobox(self.college_code_frame, values=collegeValues, state='readonly', width=17)
@@ -383,8 +395,7 @@ class Frame3:
         self.program_code_cb.set('')
         college = self.college_code_cb.get()
         programValues = []
-        collegeData = load_data("./database/colleges.csv")
-        for i in collegeData:
+        for i in self.app.collegeData:
             if (college == i[0]):
                 programValues.append(i[1])
         self.program_code_cb['values'] = programValues
@@ -451,12 +462,26 @@ class Frame3:
     def transition(self):
         self.frame3.pack()
 
-class Frame4:
+class Frame4: # SETTINGS FRAME
     def __init__(self, app):
         self.app = app
+        self.create_widgets(app)
 
+    def create_widgets(self, app):
         self.frame4 = tk.Frame(app.getRoot(), bg=app.getColor(0))
         self.frame4.pack()
+
+        # List
+        self.list_frame = tk.Frame(self.frame4, width=150, height=20)
+        self.list_frame.pack_propagate(False)
+        self.list_frame.pack(pady=(10, 0))
+
+        self.list_label = tk.Label(self.list_frame, text="List Mode: ")
+        self.list_label.pack(side="left")
+
+        self.list_cb = ttk.Combobox(self.list_frame, state='readonly', values=["Students", "Colleges"], width=8)
+        self.list_cb.pack(side="right")
+        self.list_cb.set("Students")
 
         # Search By
         self.search_frame = tk.Frame(self.frame4, width=150, height=20)
@@ -487,11 +512,65 @@ class Frame4:
         # Done
         self.done_button = ttk.Button(self.frame4, text="DONE", command=self.done_button)
         self.done_button.pack(pady=10)
+
+        # Add College Frame
+        self.AC_frame = tk.Frame(self.frame4, width=300, height=200, bg="pink")
+        self.AC_frame.pack(pady=(20, 0), side='top')
+
+        AC_frames = []
+        for i in range(0, 3):
+            AC_frames.append(tk.Frame(self.AC_frame, width=270, height=30, bg="green"))
+            AC_frames[i].pack_propagate(False)
+            AC_frames[i].pack(side='top', pady=(10, 0))
+
+        self.college_label = tk.Label(AC_frames[0], text="College", font=('helvetica', 15))
+        self.college_label.pack(side='left', padx=(0, 20))
+        self.college_entry = ttk.Entry(AC_frames[0], width=10, font=('helvetica', 15))
+        self.college_entry.pack(side='right')
+
+        self.course_code_label = tk.Label(AC_frames[1], text="Course Code", font=('helvetica', 15))
+        self.course_code_label.pack(side='left')
+        self.course_code_entry = ttk.Entry(AC_frames[1], width=10, font=('helvetica', 15))
+        self.course_code_entry.pack(side='right')
+
+        self.course_name_label = tk.Label(AC_frames[2], text="Course Name", font=('helvetica', 15))
+        self.course_name_label.pack(side='left')
+        self.course_name_entry = ttk.Entry(AC_frames[2], width=10, font=('helvetica', 15))
+        self.course_name_entry.pack(side='right')
+
+        self.add_button = ttk.Button(self.AC_frame,  text="ADD")
+        self.add_button.pack(side='top', pady=(10, 0))
+
+        # Remove College Frame
+        self.RC_Frame = tk.Frame(self.frame4, width=200, height=200, bg="cyan")
+        self.RC_Frame.pack(pady=(10,0))
+
+        RC_Frames = []
+        for i in range(0, 3):
+            RC_Frames.append(tk.Frame(self.RC_Frame, width=270, height=30))
+            RC_Frames[i].pack_propagate(False)
+            RC_Frames[i].pack(pady=(10,0))
+
+        self.rcollege_label = tk.Label(RC_Frames[0], text="College", font=('helvetica', 15))
+        self.rcollege_label.pack(side='left')
+        self.rcollege_cb = ttk.Combobox(RC_Frames[0], width=10, font=('helvetica', 15))
+        self.rcollege_cb.pack(side='right')
+
+        self.rcourse_code_label = tk.Label(RC_Frames[1], text="Course Code", font=('helvetica', 15))
+        self.rcourse_code_label.pack(side='left')
+        self.rcourse_code_cb = ttk.Combobox(RC_Frames[1], width=10, font=('helvetica', 15))
+        self.rcourse_code_cb.pack(side='right')
+
+        self.rcourse_name_label = tk.Label()
+
     
     def done_button(self):
-        self.app.setSearchSet(self.searchValues[self.search_cb.get()])
-        self.app.sort_students(self.searchValues[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
-        self.app.transition_frames(self.app.frame1_obj)
+        if self.list_cb.get() == "Students":
+            self.app.setSearchSet(self.searchValues[self.search_cb.get()])
+            self.app.sort_students(self.searchValues[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
+            self.app.transition_frames(self.app.frame1_obj)
+        elif self.list_cb.get() == "Colleges":
+            pass
 
     def transition(self):
         self.frame4.pack()
