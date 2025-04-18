@@ -16,14 +16,23 @@ class MiniProfile:
         frame.bind("<Button-1>", lambda event: [ app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
 
         for i in range(0, len(list_element)):
-            t = list_element[i]
-            if i == ID:
-                t = text=str(list_element[ID])[:4] + "-" + str(list_element[ID])[4:8]
-            l = tk.Label(frame, text=t, bg=app.getColor(2), width=11)
-            l.pack_propagate(False)
-            l.pack(padx=(3, 0), side="left")
-            l.bind("<Button-1>", lambda event: [ app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
-
+            if app.list_mode == 0:
+                t = list_element[i]
+                if i == ID:
+                    t = text=str(list_element[ID])[:4] + "-" + str(list_element[ID])[4:8]
+                l = tk.Label(frame, text=t, bg=app.getColor(2), width=11)
+                l.pack_propagate(False)
+                l.pack(padx=(3, 0), side="left")
+                l.bind("<Button-1>", lambda event: [ app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
+            elif app.list_mode == 1:
+                t = list_element[i]
+                w = 11
+                if i == 2:
+                    w = 70
+                l = tk.Label(frame, text=t, bg=app.getColor(2), width=w)
+                l.pack_propagate(False)
+                l.pack(padx=(3, 0), side="left")
+                l.bind("<Button-1>", lambda event: [ app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
 class Frame1: # CRUDL FRAME
     def __init__(self, app):
         self.app = app
@@ -57,10 +66,10 @@ class Frame1: # CRUDL FRAME
 
         self.labels_frame = tk.Frame(master=self.top_row_frame, bg=app.getColor(2))
         self.labels_frame.pack(padx=(0, 10), side="left")
-        labels = {"First N":43, "Last N":47, "Sex":55, "ID#":66, "Year Level":43, "College":35, "Code":45}
-        for i in list(labels.keys()):
-            self.label_ = tk.Label(master=self.labels_frame, bg=app.getColor(2), text=i)
-            self.label_.pack(side="left", padx=(labels[i],0))
+
+        self.label_frame_upd(0)
+            
+        
 
         self.bot_frame = tk.Frame(master=self.frame1, width=665, height=480, bg=app.getColor(1))
         self.bot_frame.pack_propagate(False)
@@ -124,6 +133,19 @@ class Frame1: # CRUDL FRAME
                 self.page_entry_var.set("1")
             self.show_list()
 
+    def label_frame_upd(self, int_label):
+        stud_label = {"First N":43, "Last N":47, "Sex":55, "ID#":66, "Year Level":43, "College":35, "Code":45}
+        col_label = {"College":43, "Course Code":28, "Course Name": 185}
+        if int_label == 0:
+            labels = stud_label
+        elif int_label == 1:
+            labels = col_label
+        for i in self.labels_frame.winfo_children():
+            i.pack_forget()
+        for i in list(labels.keys()):
+            self.label_ = tk.Label(master=self.labels_frame, bg=self.app.getColor(2), text=i)
+            self.label_.pack(side="left", padx=(labels[i],0))
+
     def show_list(self):
         self.maxPage = ceil(len(self.acquired_list)/12)
         self.page_label2_var.set(f"of {self.maxPage}")
@@ -149,8 +171,10 @@ class Frame1: # CRUDL FRAME
         self.frame1.pack()
         if self.app.list_mode == 0:
             self.acquired_list = self.app.getStudentDb()
+            self.label_frame_upd(0)
         elif self.app.list_mode == 1:
             self.acquired_list = self.app.getCollegeDb()
+            self.label_frame_upd(1)
         self.show_list()
 
     def getMainFrame(self):
