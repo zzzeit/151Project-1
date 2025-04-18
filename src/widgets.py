@@ -9,20 +9,20 @@ from data_management import *
 import main
 
 class MiniProfile:
-    def __init__(self, app, master, student):
+    def __init__(self, app, master, list_element):
         frame = tk.Frame(master, bg=app.getColor(2), width=620, height=30)
         frame.pack_propagate(False)
         frame.pack(pady=5, padx=10)
-        frame.bind("<Button-1>", lambda event: [ app.setMainStud(student), app.transition_frames(app.frame2_obj)])
+        frame.bind("<Button-1>", lambda event: [ app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
 
-        for i in range(0, 7):
-            t = student[i]
+        for i in range(0, len(list_element)):
+            t = list_element[i]
             if i == ID:
-                t = text=str(student[ID])[:4] + "-" + str(student[ID])[4:8]
+                t = text=str(list_element[ID])[:4] + "-" + str(list_element[ID])[4:8]
             l = tk.Label(frame, text=t, bg=app.getColor(2), width=11)
             l.pack_propagate(False)
             l.pack(padx=(3, 0), side="left")
-            l.bind("<Button-1>", lambda event: [ app.setMainStud(student), app.transition_frames(app.frame2_obj)])
+            l.bind("<Button-1>", lambda event: [ app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
 
 class Frame1: # CRUDL FRAME
     def __init__(self, app):
@@ -147,7 +147,10 @@ class Frame1: # CRUDL FRAME
 
     def transition(self):
         self.frame1.pack()
-        self.acquired_list = self.app.getStudentDb()
+        if self.app.list_mode == 0:
+            self.acquired_list = self.app.getStudentDb()
+        elif self.app.list_mode == 1:
+            self.acquired_list = self.app.getCollegeDb()
         self.show_list()
 
     def getMainFrame(self):
@@ -568,9 +571,11 @@ class Frame4: # SETTINGS FRAME
         if self.list_cb.get() == "Students":
             self.app.setSearchSet(self.searchValues[self.search_cb.get()])
             self.app.sort_students(self.searchValues[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
+            self.app.list_mode = 0
             self.app.transition_frames(self.app.frame1_obj)
         elif self.list_cb.get() == "Colleges":
-            pass
+            self.app.list_mode = 1
+            self.app.transition_frames(self.app.frame1_obj)
 
     def transition(self):
         self.frame4.pack()

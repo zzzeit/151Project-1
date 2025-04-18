@@ -15,6 +15,7 @@ class StudentProfileApp:
 
         self.students_database = dm.load_data("./database/students.csv")
         self.collegeData = dm.load_data("./database/colleges.csv")
+        self.list_mode = 0
         self.current_year = dt.datetime.now().year
 
         self.main_student = None
@@ -62,6 +63,9 @@ class StudentProfileApp:
     
     def getStudentDb(self):
         return self.students_database
+    
+    def getCollegeDb(self):
+        return self.collegeData
     
     def getMainStud(self):
         return self.main_student
