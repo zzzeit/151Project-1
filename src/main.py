@@ -18,7 +18,10 @@ class StudentProfileApp:
         self.list_mode = 0
         self.current_year = dt.datetime.now().year
 
+        self.colleges_list = []
+
         self.main_student = None
+        self.main_college = None
 
         self.search_setting = 0
         self.themeColors = ["#454148", "#5c5960", "#757278", "#8f8d92"]
@@ -28,11 +31,17 @@ class StudentProfileApp:
 
 
     def create_main_frames(self):
+        self.updateCollegesList()
+
         self.frame1_obj = ws.Frame1(self)
         self.frame2_obj = ws.Frame2(self)
         self.frame3_obj = ws.Frame3(self)
         self.frame4_obj = ws.Frame4(self)
+        self.frame5_obj = ws.Frame5(self)
+        self.frame6_obj = ws.Frame6(self)
         self.transition_frames(self.frame1_obj)
+
+
 
     def transition_frames(self, mainFrame):
         for widget in self.root.winfo_children():
@@ -52,6 +61,11 @@ class StudentProfileApp:
         self.students_database = [student for student in self.students_database if student[3] != student_id]
         dm.write_data("./database/students.csv", self.students_database)
 
+    def delete_college(self, code):
+        print(code)
+        self.collegeData = [coll for coll in self.collegeData if coll[1] != code]
+        dm.write_data("./database/colleges.csv", self.collegeData, 1)
+    
 
     # Getter methods
     def getColor(self, index):
@@ -70,8 +84,14 @@ class StudentProfileApp:
     def getMainStud(self):
         return self.main_student
     
+    def getMainColl(self):
+        return self.main_college
+    
     def getSearchSet(self):
         return self.search_setting
+    
+    def getCollegesList(self):
+        return self.colleges_list
     
     def setSearchSet(self, i):
         self.search_setting = i
@@ -81,6 +101,14 @@ class StudentProfileApp:
 
     def setMainStud(self, student):
         self.main_student = student
+
+    def setMainColl(self, college):
+        self.main_college = college
+
+    def updateCollegesList(self):
+        for i in self.collegeData:
+            if i[0] not in self.colleges_list:
+                self.colleges_list.append(i[0])
 
 
         

@@ -13,18 +13,20 @@ class MiniProfile:
         frame = tk.Frame(master, bg=app.getColor(2), width=620, height=30)
         frame.pack_propagate(False)
         frame.pack(pady=5, padx=10)
-        frame.bind("<Button-1>", lambda event: [ app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
-
-        for i in range(0, len(list_element)):
-            if app.list_mode == 0:
+        if app.list_mode == 0:
+            frame.bind("<Button-1>", lambda event: [app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
+            for i in range(0, len(list_element)):
                 t = list_element[i]
                 if i == ID:
                     t = text=str(list_element[ID])[:4] + "-" + str(list_element[ID])[4:8]
                 l = tk.Label(frame, text=t, bg=app.getColor(2), width=11)
                 l.pack_propagate(False)
                 l.pack(padx=(3, 0), side="left")
-                l.bind("<Button-1>", lambda event: [ app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
-            elif app.list_mode == 1:
+                l.bind("<Button-1>", lambda event: [app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
+            
+        elif app.list_mode == 1:
+            frame.unbind("<Button-1>")
+            for i in range(0, len(list_element)):
                 t = list_element[i]
                 w = 11
                 if i == 2:
@@ -32,7 +34,8 @@ class MiniProfile:
                 l = tk.Label(frame, text=t, bg=app.getColor(2), width=w)
                 l.pack_propagate(False)
                 l.pack(padx=(3, 0), side="left")
-                l.bind("<Button-1>", lambda event: [ app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
+                l.unbind("<Button-1>")
+
 class Frame1: # CRUDL FRAME
     def __init__(self, app):
         self.app = app
@@ -147,6 +150,10 @@ class Frame1: # CRUDL FRAME
             self.label_.pack(side="left", padx=(labels[i],0))
 
     def show_list(self):
+        if self.app.list_mode == 0:
+            self.add_student_button.configure(command=lambda: self.app.transition_frames(self.app.frame3_obj))
+        elif self.app.list_mode == 1:
+            self.add_student_button.configure(command=lambda: self.app.transition_frames(self.app.frame5_obj))
         self.maxPage = ceil(len(self.acquired_list)/12)
         self.page_label2_var.set(f"of {self.maxPage}")
         for widget in self.bot_frame.winfo_children():
@@ -540,8 +547,33 @@ class Frame4: # SETTINGS FRAME
         self.done_button = ttk.Button(self.frame4, text="DONE", command=self.done_button)
         self.done_button.pack(pady=10)
 
+        
+
+    
+    def done_button(self):
+        if self.list_cb.get() == "Students":
+            self.app.setSearchSet(self.searchValues[self.search_cb.get()])
+            self.app.sort_students(self.searchValues[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
+            self.app.list_mode = 0
+            self.app.transition_frames(self.app.frame1_obj)
+        elif self.list_cb.get() == "Colleges":
+            self.app.list_mode = 1
+            self.app.transition_frames(self.app.frame1_obj)
+
+    def transition(self):
+        self.frame4.pack()
+
+class Frame5: # ADD COLLEGE FRAME
+    def __init__(self, app):
+        self.app = app
+        self.create_widgets(app)
+
+
+    def create_widgets(self, app):
+        self.frame5 = tk.Frame(app.getRoot(), bg=app.getColor(0))
+        self.frame5.pack()
         # Add College Frame
-        self.AC_frame = tk.Frame(self.frame4, width=300, height=200, bg="pink")
+        self.AC_frame = tk.Frame(self.frame5, width=300, height=200, bg="pink")
         self.AC_frame.pack(pady=(20, 0), side='top')
 
         AC_frames = []
@@ -569,7 +601,7 @@ class Frame4: # SETTINGS FRAME
         self.add_button.pack(side='top', pady=(10, 0))
 
         # Remove College Frame
-        self.RC_Frame = tk.Frame(self.frame4, width=200, height=200, bg="cyan")
+        self.RC_Frame = tk.Frame(self.frame5, width=200, height=200, bg="cyan")
         self.RC_Frame.pack(pady=(10,0))
 
         RC_Frames = []
@@ -580,26 +612,43 @@ class Frame4: # SETTINGS FRAME
 
         self.rcollege_label = tk.Label(RC_Frames[0], text="College", font=('helvetica', 15))
         self.rcollege_label.pack(side='left')
-        self.rcollege_cb = ttk.Combobox(RC_Frames[0], width=10, font=('helvetica', 15))
+        self.rcollege_cb = ttk.Combobox(RC_Frames[0], width=10, font=('helvetica', 15), values=app.getCollegesList(), state='readonly')
         self.rcollege_cb.pack(side='right')
+        self.rcollege_cb.bind('<<ComboboxSelected>>', self.upd_rcource_code_cb)
 
         self.rcourse_code_label = tk.Label(RC_Frames[1], text="Course Code", font=('helvetica', 15))
         self.rcourse_code_label.pack(side='left')
-        self.rcourse_code_cb = ttk.Combobox(RC_Frames[1], width=10, font=('helvetica', 15))
+        self.rcourse_code_cb = ttk.Combobox(RC_Frames[1], width=10, font=('helvetica', 15), state='readonly')
         self.rcourse_code_cb.pack(side='right')
 
-        self.rcourse_name_label = tk.Label()
+        self.remove_button = ttk.Button(self.RC_Frame, text="Remove", command=self.remove_button_func)
+        self.remove_button.pack()
 
-    
-    def done_button(self):
-        if self.list_cb.get() == "Students":
-            self.app.setSearchSet(self.searchValues[self.search_cb.get()])
-            self.app.sort_students(self.searchValues[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
-            self.app.list_mode = 0
-            self.app.transition_frames(self.app.frame1_obj)
-        elif self.list_cb.get() == "Colleges":
-            self.app.list_mode = 1
-            self.app.transition_frames(self.app.frame1_obj)
+        self.exit_button = ttk.Button(self.frame5, text="Exit", command=self.exit_button_func)
+        self.exit_button.pack(side='top', pady=(10, 0))
+
+    def upd_rcource_code_cb(self, e):
+        v = []
+        for i in self.app.getCollegeDb():
+            if self.rcollege_cb.get() == i[0]:
+                v.append(i[1])
+        self.rcourse_code_cb.config(values=v)
+
+    def remove_button_func(self):
+        self.app.delete_college(self.rcourse_code_cb.get())  
+
+    def exit_button_func(self):
+        self.app.transition_frames(self.app.frame1_obj)
 
     def transition(self):
-        self.frame4.pack()
+        self.frame5.pack()
+
+class Frame6:
+    def __init__(self, app):
+        self.app = app
+        self.create_widgets(app)
+    def create_widgets(self, app):
+        self.frame6 = tk.Frame(app.getRoot(), bg=app.getColor(0))
+
+    def transition(self):
+        self.frame6.pack()

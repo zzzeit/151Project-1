@@ -11,10 +11,13 @@ YRLVL = 4
 CCODE = 5
 PCODE = 6
 
-def write_data(filename, data):
+def write_data(filename, data, int=0):
+    v = ["fname","lname","sex","ID#","year lvl","program code"]
+    if v != 0:
+        v = ["College","Course Code","Course Name"]
     with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
-        writer.writerow(["fname","lname","sex","ID#","year lvl","program code"])
+        writer.writerow(v)
         writer.writerows(data)
 def load_data(filename):
     with open(filename, 'r') as f:
