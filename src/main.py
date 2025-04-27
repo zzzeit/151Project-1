@@ -61,6 +61,10 @@ class StudentProfileApp:
         self.students_database = [student for student in self.students_database if student[3] != student_id]
         dm.write_data("./database/students.csv", self.students_database)
 
+    def add_college(self, data):
+        self.collegeData.append(data)
+        dm.write_data("./database/colleges.csv", self.collegeData, 1)
+
     def delete_college(self, code):
         print(code)
         self.collegeData = [coll for coll in self.collegeData if coll[1] != code]

@@ -597,7 +597,7 @@ class Frame5: # ADD COLLEGE FRAME
         self.course_name_entry = ttk.Entry(AC_frames[2], width=10, font=('helvetica', 15))
         self.course_name_entry.pack(side='right')
 
-        self.add_button = ttk.Button(self.AC_frame,  text="ADD")
+        self.add_button = ttk.Button(self.AC_frame,  text="ADD", command=self.add_button_func)
         self.add_button.pack(side='top', pady=(10, 0))
 
         # Remove College Frame
@@ -634,8 +634,20 @@ class Frame5: # ADD COLLEGE FRAME
                 v.append(i[1])
         self.rcourse_code_cb.config(values=v)
 
+    def add_button_func(self):
+        self.app.add_college([self.college_entry.get(), self.course_code_entry.get(), self.course_name_entry.get()])
+        self.exit_button_func()
+        
+        self.college_entry.delete(0, tk.END)
+        self.course_code_entry.delete(0, tk.END)
+        self.course_name_entry.delete(0, tk.END)
+
     def remove_button_func(self):
-        self.app.delete_college(self.rcourse_code_cb.get())  
+        self.app.delete_college(self.rcourse_code_cb.get())
+        self.exit_button_func()
+
+        self.rcollege_cb.set('')
+        self.rcourse_code_cb.set('')
 
     def exit_button_func(self):
         self.app.transition_frames(self.app.frame1_obj)
