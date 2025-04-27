@@ -573,12 +573,12 @@ class Frame5: # ADD COLLEGE FRAME
         self.frame5 = tk.Frame(app.getRoot(), bg=app.getColor(0))
         self.frame5.pack()
         # Add College Frame
-        self.AC_frame = tk.Frame(self.frame5, width=300, height=200, bg="pink")
+        self.AC_frame = tk.Frame(self.frame5, width=300, height=200, bg=app.getColor(1))
         self.AC_frame.pack(pady=(20, 0), side='top')
 
         AC_frames = []
         for i in range(0, 3):
-            AC_frames.append(tk.Frame(self.AC_frame, width=270, height=30, bg="green"))
+            AC_frames.append(tk.Frame(self.AC_frame, width=270, height=30, bg="white"))
             AC_frames[i].pack_propagate(False)
             AC_frames[i].pack(side='top', pady=(10, 0))
 
@@ -601,12 +601,12 @@ class Frame5: # ADD COLLEGE FRAME
         self.add_button.pack(side='top', pady=(10, 0))
 
         # Remove College Frame
-        self.RC_Frame = tk.Frame(self.frame5, width=200, height=200, bg="cyan")
-        self.RC_Frame.pack(pady=(10,0))
+        self.RC_Frame = tk.Frame(self.frame5, width=200, height=200, bg=app.getColor(1))
+        self.RC_Frame.pack(pady=(30,0))
 
         RC_Frames = []
         for i in range(0, 2):
-            RC_Frames.append(tk.Frame(self.RC_Frame, width=270, height=30))
+            RC_Frames.append(tk.Frame(self.RC_Frame, width=270, height=30, bg="white"))
             RC_Frames[i].pack_propagate(False)
             RC_Frames[i].pack(pady=(10,0))
 
@@ -622,7 +622,7 @@ class Frame5: # ADD COLLEGE FRAME
         self.rcourse_code_cb.pack(side='right')
 
         self.remove_button = ttk.Button(self.RC_Frame, text="Remove", command=self.remove_button_func)
-        self.remove_button.pack()
+        self.remove_button.pack(pady=(10, 0))
 
         self.exit_button = ttk.Button(self.frame5, text="Exit", command=self.exit_button_func)
         self.exit_button.pack(side='top', pady=(10, 0))
