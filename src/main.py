@@ -65,10 +65,13 @@ class StudentProfileApp:
         self.collegeData.append(data)
         dm.write_data("./database/colleges.csv", self.collegeData, 1)
 
+        self.updateCollegesList()
+
     def delete_college(self, code):
-        print(code)
         self.collegeData = [coll for coll in self.collegeData if coll[1] != code]
         dm.write_data("./database/colleges.csv", self.collegeData, 1)
+
+        self.updateCollegesList()
     
 
     # Getter methods
@@ -113,6 +116,9 @@ class StudentProfileApp:
         for i in self.collegeData:
             if i[0] not in self.colleges_list:
                 self.colleges_list.append(i[0])
+
+    def updateCollegeData(self):
+        self.collegeData = dm.load_data("./database/colleges.csv")
 
 
         

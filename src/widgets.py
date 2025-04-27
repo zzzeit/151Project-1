@@ -605,7 +605,7 @@ class Frame5: # ADD COLLEGE FRAME
         self.RC_Frame.pack(pady=(10,0))
 
         RC_Frames = []
-        for i in range(0, 3):
+        for i in range(0, 2):
             RC_Frames.append(tk.Frame(self.RC_Frame, width=270, height=30))
             RC_Frames[i].pack_propagate(False)
             RC_Frames[i].pack(pady=(10,0))
@@ -614,7 +614,7 @@ class Frame5: # ADD COLLEGE FRAME
         self.rcollege_label.pack(side='left')
         self.rcollege_cb = ttk.Combobox(RC_Frames[0], width=10, font=('helvetica', 15), values=app.getCollegesList(), state='readonly')
         self.rcollege_cb.pack(side='right')
-        self.rcollege_cb.bind('<<ComboboxSelected>>', self.upd_rcource_code_cb)
+        self.rcollege_cb.bind('<<ComboboxSelected>>', self.upd_rcourse_code_cb)
 
         self.rcourse_code_label = tk.Label(RC_Frames[1], text="Course Code", font=('helvetica', 15))
         self.rcourse_code_label.pack(side='left')
@@ -627,8 +627,9 @@ class Frame5: # ADD COLLEGE FRAME
         self.exit_button = ttk.Button(self.frame5, text="Exit", command=self.exit_button_func)
         self.exit_button.pack(side='top', pady=(10, 0))
 
-    def upd_rcource_code_cb(self, e):
+    def upd_rcourse_code_cb(self, e):
         v = []
+        self.app.updateCollegeData()
         for i in self.app.getCollegeDb():
             if self.rcollege_cb.get() == i[0]:
                 v.append(i[1])
@@ -642,12 +643,18 @@ class Frame5: # ADD COLLEGE FRAME
         self.course_code_entry.delete(0, tk.END)
         self.course_name_entry.delete(0, tk.END)
 
+        self.rcollege_cb.config(values=self.app.getCollegesList())
+        self.rcourse_code_cb.config(values=[])
+
     def remove_button_func(self):
         self.app.delete_college(self.rcourse_code_cb.get())
         self.exit_button_func()
 
         self.rcollege_cb.set('')
         self.rcourse_code_cb.set('')
+
+        self.rcollege_cb.config(values=self.app.getCollegesList())
+        self.rcourse_code_cb.config(values=[])
 
     def exit_button_func(self):
         self.app.transition_frames(self.app.frame1_obj)
