@@ -1,6 +1,3 @@
-import json
-import csv
-import os
 
 
 FNAME = 0
@@ -11,17 +8,19 @@ YRLVL = 4
 CCODE = 5
 PCODE = 6
 
-def write_data(filename, data, int=0):
-    v = ["fname","lname","sex","ID#","year lvl","program code"]
-    if int != 0:
-        v = ["College","Course Code","Course Name"]
-    with open(filename, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(v)
-        writer.writerows(data)
-def load_data(filename):
-    with open(filename, 'r') as f:
-        reader = csv.reader(f)
-        header = next(reader)
-        return list(reader)
-    
+
+class DataManager:
+    def __init__(self, conn, curs):
+        self.connection = conn
+        self.cursor = curs
+
+    def write_data(self, table_name, data):
+        placeholders = ', '.join(['?'] * len(data))
+        query = f"INSERT OR IGNORE INTO {table_name} VALUES ({placeholders})"
+        self.cursor.execute(query, tuple(data))
+        self.connection.commit()
+
+    def load_data(self, table_name):
+        query = f"SELECT * FROM {table_name}"
+        self.cursor.execute(query)
+        return self.cursor.fetchall()

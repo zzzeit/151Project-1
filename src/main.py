@@ -3,18 +3,21 @@ import datetime as dt
 
 import data_management as dm
 import widgets as ws
-
+import sqlite3 as sql
 
 class StudentProfileApp:
-    def __init__(self, root):
+    def __init__(self, root, connection, cursor, data_manager):
         self.root = root
+        self.connection = connection
+        self.cursor = cursor
+        self.data_manager = data_manager
         self.root.title("Student Profile")
         self.root.geometry('700x640')
         self.root.resizable(False, False)
 
 
-        self.students_database = dm.load_data("./database/students.csv")
-        self.collegeData = dm.load_data("./database/colleges.csv")
+        self.students_database = self.data_manager.load_data("students")
+        self.collegeData = self.data_manager.load_data("colleges")
         self.list_mode = 0
         self.current_year = dt.datetime.now().year
 
@@ -124,9 +127,38 @@ class StudentProfileApp:
         
 
 def main():
+    connection = sql.connect("./database/database.db")
+    cursor = connection.cursor()
+    DM = dm.DataManager(connection, cursor)
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS students (
+        fname TEXT NOT NULL,
+        lname TEXT NOT NULL,
+        sex TEXT NOT NULL,
+        id TEXT PRIMARY KEY,
+        year_level TEXT NOT NULL,
+        college TEXT NOT NULL,
+        program_code TEXT NOT NULL
+    )
+    ''')
+
+    cursor.execute('''
+    CREATE TABLE IF NOT EXISTS colleges (
+        college TEXT NOT NULL,
+        course_code TEXT NOT NULL,
+        course_name TEXT NOT NULL,
+        PRIMARY KEY (college, course_code)
+    )
+    ''')
+
+    connection.commit()
+
     root = tk.Tk()
-    app = StudentProfileApp(root)
+    app = StudentProfileApp(root, connection, cursor, DM)
     root.mainloop()
+
+    connection.close()
 
 if __name__ == "__main__":
     main()

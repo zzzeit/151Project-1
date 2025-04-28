@@ -475,7 +475,7 @@ class Frame3:
         values[YRLVL] = values[YRLVL][:3]
         studdb = self.app.getStudentDb()
         studdb.append(values)
-        write_data("./database/students.csv", studdb)
+        self.app.data_manager.write_data("students", values)
         self.clear_entries()
 
     def alert_message(self, title, text):
