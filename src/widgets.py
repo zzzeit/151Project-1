@@ -138,7 +138,7 @@ class Frame1: # CRUDL FRAME
 
     def label_frame_upd(self, int_label):
         stud_label = {"First N":43, "Last N":47, "Sex":55, "ID#":66, "Year Level":43, "College":35, "Code":45}
-        col_label = {"College":43, "Course Code":28, "Course Name": 185}
+        col_label = {"College":43, "Program Code":28, "Program Name": 185}
         if int_label == 0:
             labels = stud_label
         elif int_label == 1:
@@ -180,7 +180,7 @@ class Frame1: # CRUDL FRAME
             self.acquired_list = self.app.getStudentDb()
             self.label_frame_upd(0)
         elif self.app.list_mode == 1:
-            self.acquired_list = self.app.getCollegeDb()
+            self.acquired_list = self.app.getProgramDb()
             self.label_frame_upd(1)
         self.show_list()
 
@@ -397,7 +397,7 @@ class Frame3:
         self.college_code_label.pack(side="left", padx=(20, 0))
 
         collegeValues = []
-        for i in app.collegeData:
+        for i in app.programs_database:
             if i[0] not in collegeValues:
                 collegeValues.append(i[0])
         self.college_code_cb = ttk.Combobox(self.college_code_frame, values=collegeValues, state='readonly', width=17)
@@ -429,7 +429,7 @@ class Frame3:
         self.program_code_cb.set('')
         college = self.college_code_cb.get()
         programValues = []
-        for i in self.app.collegeData:
+        for i in self.app.programs_database:
             if (college == i[0]):
                 programValues.append(i[1])
         self.program_code_cb['values'] = programValues
@@ -587,15 +587,15 @@ class Frame5: # ADD COLLEGE FRAME
         self.college_entry = ttk.Entry(AC_frames[0], width=10, font=('helvetica', 15))
         self.college_entry.pack(side='right')
 
-        self.course_code_label = tk.Label(AC_frames[1], text="Course Code", font=('helvetica', 15))
-        self.course_code_label.pack(side='left')
-        self.course_code_entry = ttk.Entry(AC_frames[1], width=10, font=('helvetica', 15))
-        self.course_code_entry.pack(side='right')
+        self.program_code_label = tk.Label(AC_frames[1], text="Course Code", font=('helvetica', 15))
+        self.program_code_label.pack(side='left')
+        self.program_code_entry = ttk.Entry(AC_frames[1], width=10, font=('helvetica', 15))
+        self.program_code_entry.pack(side='right')
 
-        self.course_name_label = tk.Label(AC_frames[2], text="Course Name", font=('helvetica', 15))
-        self.course_name_label.pack(side='left')
-        self.course_name_entry = ttk.Entry(AC_frames[2], width=10, font=('helvetica', 15))
-        self.course_name_entry.pack(side='right')
+        self.program_name_label = tk.Label(AC_frames[2], text="Course Name", font=('helvetica', 15))
+        self.program_name_label.pack(side='left')
+        self.program_name_entry = ttk.Entry(AC_frames[2], width=10, font=('helvetica', 15))
+        self.program_name_entry.pack(side='right')
 
         self.add_button = ttk.Button(self.AC_frame,  text="ADD", command=self.add_button_func)
         self.add_button.pack(side='top', pady=(10, 0))
@@ -612,14 +612,14 @@ class Frame5: # ADD COLLEGE FRAME
 
         self.rcollege_label = tk.Label(RC_Frames[0], text="College", font=('helvetica', 15))
         self.rcollege_label.pack(side='left')
-        self.rcollege_cb = ttk.Combobox(RC_Frames[0], width=10, font=('helvetica', 15), values=app.getCollegesList(), state='readonly')
+        self.rcollege_cb = ttk.Combobox(RC_Frames[0], width=10, font=('helvetica', 15), values=app.getProgramsList(), state='readonly')
         self.rcollege_cb.pack(side='right')
-        self.rcollege_cb.bind('<<ComboboxSelected>>', self.upd_rcourse_code_cb)
+        self.rcollege_cb.bind('<<ComboboxSelected>>', self.upd_rprogram_code_cb)
 
-        self.rcourse_code_label = tk.Label(RC_Frames[1], text="Course Code", font=('helvetica', 15))
-        self.rcourse_code_label.pack(side='left')
-        self.rcourse_code_cb = ttk.Combobox(RC_Frames[1], width=10, font=('helvetica', 15), state='readonly')
-        self.rcourse_code_cb.pack(side='right')
+        self.rprogram_code_label = tk.Label(RC_Frames[1], text="Course Code", font=('helvetica', 15))
+        self.rprogram_code_label.pack(side='left')
+        self.rprogram_code_cb = ttk.Combobox(RC_Frames[1], width=10, font=('helvetica', 15), state='readonly')
+        self.rprogram_code_cb.pack(side='right')
 
         self.remove_button = ttk.Button(self.RC_Frame, text="Remove", command=self.remove_button_func)
         self.remove_button.pack(pady=(10, 0))
@@ -627,34 +627,34 @@ class Frame5: # ADD COLLEGE FRAME
         self.exit_button = ttk.Button(self.frame5, text="Exit", command=self.exit_button_func)
         self.exit_button.pack(side='top', pady=(10, 0))
 
-    def upd_rcourse_code_cb(self, e):
+    def upd_rprogram_code_cb(self, e):
         v = []
-        self.app.updateCollegeData()
-        for i in self.app.getCollegeDb():
+        self.app.updateprograms_database()
+        for i in self.app.getProgramDb():
             if self.rcollege_cb.get() == i[0]:
                 v.append(i[1])
-        self.rcourse_code_cb.config(values=v)
+        self.rprogram_code_cb.config(values=v)
 
     def add_button_func(self):
-        self.app.add_college([self.college_entry.get(), self.course_code_entry.get(), self.course_name_entry.get()])
+        self.app.add_program([self.college_entry.get(), self.program_code_entry.get(), self.program_name_entry.get()])
         self.exit_button_func()
         
         self.college_entry.delete(0, tk.END)
-        self.course_code_entry.delete(0, tk.END)
-        self.course_name_entry.delete(0, tk.END)
+        self.program_code_entry.delete(0, tk.END)
+        self.program_name_entry.delete(0, tk.END)
 
-        self.rcollege_cb.config(values=self.app.getCollegesList())
-        self.rcourse_code_cb.config(values=[])
+        self.rcollege_cb.config(values=self.app.getProgramsList())
+        self.rprogram_code_cb.config(values=[])
 
     def remove_button_func(self):
-        self.app.delete_college(self.rcourse_code_cb.get())
+        self.app.delete_program(self.rprogram_code_cb.get())
         self.exit_button_func()
 
         self.rcollege_cb.set('')
-        self.rcourse_code_cb.set('')
+        self.rprogram_code_cb.set('')
 
-        self.rcollege_cb.config(values=self.app.getCollegesList())
-        self.rcourse_code_cb.config(values=[])
+        self.rcollege_cb.config(values=self.app.getProgramsList())
+        self.rprogram_code_cb.config(values=[])
 
     def exit_button_func(self):
         self.app.transition_frames(self.app.frame1_obj)
@@ -662,12 +662,3 @@ class Frame5: # ADD COLLEGE FRAME
     def transition(self):
         self.frame5.pack()
 
-class Frame6:
-    def __init__(self, app):
-        self.app = app
-        self.create_widgets(app)
-    def create_widgets(self, app):
-        self.frame6 = tk.Frame(app.getRoot(), bg=app.getColor(0))
-
-    def transition(self):
-        self.frame6.pack()

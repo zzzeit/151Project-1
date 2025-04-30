@@ -14,14 +14,14 @@ class StudentProfileApp:
 
 
         self.students_database = dm.load_data("./database/students.csv")
-        self.collegeData = dm.load_data("./database/colleges.csv")
+        self.programs_database = dm.load_data("./database/programs.csv")
         self.list_mode = 0
         self.current_year = dt.datetime.now().year
 
-        self.colleges_list = []
+        self.programs_list = []
 
         self.main_student = None
-        self.main_college = None
+        self.main_program = None
 
         self.search_setting = 0
         self.themeColors = ["#454148", "#5c5960", "#757278", "#8f8d92"]
@@ -31,14 +31,14 @@ class StudentProfileApp:
 
 
     def create_main_frames(self):
-        self.updateCollegesList()
+        self.updateProgramsList()
 
         self.frame1_obj = ws.Frame1(self)
         self.frame2_obj = ws.Frame2(self)
         self.frame3_obj = ws.Frame3(self)
         self.frame4_obj = ws.Frame4(self)
         self.frame5_obj = ws.Frame5(self)
-        self.frame6_obj = ws.Frame6(self)
+        self.frame6_obj = ws.Frame3(self)
         self.transition_frames(self.frame1_obj)
 
 
@@ -61,17 +61,17 @@ class StudentProfileApp:
         self.students_database = [student for student in self.students_database if student[3] != student_id]
         dm.write_data("./database/students.csv", self.students_database)
 
-    def add_college(self, data):
-        self.collegeData.append(data)
-        dm.write_data("./database/colleges.csv", self.collegeData, 1)
+    def add_program(self, data):
+        self.programs_database.append(data)
+        dm.write_data("./database/programs.csv", self.programs_database, 1)
 
-        self.updateCollegesList()
+        self.updateProgramsList()
 
-    def delete_college(self, code):
-        self.collegeData = [coll for coll in self.collegeData if coll[1] != code]
-        dm.write_data("./database/colleges.csv", self.collegeData, 1)
+    def delete_program(self, code):
+        self.programs_database = [coll for coll in self.programs_database if coll[1] != code]
+        dm.write_data("./database/programs.csv", self.programs_database, 1)
 
-        self.updateCollegesList()
+        self.updateProgramsList()
     
 
     # Getter methods
@@ -85,20 +85,20 @@ class StudentProfileApp:
     def getStudentDb(self):
         return self.students_database
     
-    def getCollegeDb(self):
-        return self.collegeData
+    def getProgramDb(self):
+        return self.programs_database
     
     def getMainStud(self):
         return self.main_student
     
     def getMainColl(self):
-        return self.main_college
+        return self.main_program
     
     def getSearchSet(self):
         return self.search_setting
     
-    def getCollegesList(self):
-        return self.colleges_list
+    def getProgramsList(self):
+        return self.programs_list
     
     def setSearchSet(self, i):
         self.search_setting = i
@@ -109,16 +109,16 @@ class StudentProfileApp:
     def setMainStud(self, student):
         self.main_student = student
 
-    def setMainColl(self, college):
-        self.main_college = college
+    def setMainColl(self, program):
+        self.main_program = program
 
-    def updateCollegesList(self):
-        for i in self.collegeData:
-            if i[0] not in self.colleges_list:
-                self.colleges_list.append(i[0])
+    def updateProgramsList(self):
+        for i in self.programs_database:
+            if i[0] not in self.programs_list:
+                self.programs_list.append(i[0])
 
-    def updateCollegeData(self):
-        self.collegeData = dm.load_data("./database/colleges.csv")
+    def updateprograms_database(self):
+        self.programs_database = dm.load_data("./database/programs.csv")
 
 
         
