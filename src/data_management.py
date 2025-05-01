@@ -13,8 +13,10 @@ PCODE = 6
 
 def write_data(filename, data, int=0):
     v = ["fname","lname","sex","ID#","year lvl","program code"]
-    if int != 0:
+    if int == 1:
         v = ["College","Course Code","Course Name"]
+    elif int == 2:
+        v = ["College Name", "College Code"]
     with open(filename, 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(v)

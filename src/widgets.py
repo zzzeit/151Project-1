@@ -36,6 +36,18 @@ class MiniProfile:
                 l.pack(padx=(3, 0), side="left")
                 l.unbind("<Button-1>")
 
+        elif app.list_mode == 2:
+            frame.unbind("<Button-1>")
+            for i in range(0, len(list_element)):
+                t = list_element[i]
+                w = 70
+                if i == 1:
+                    w = 10
+                l = tk.Label(frame, text=t, bg=app.getColor(2), width=w)
+                l.pack_propagate(False)
+                l.pack(padx=(3, 0), side="left")
+                l.unbind("<Button-1>")
+
 class Frame1: # CRUDL FRAME
     def __init__(self, app):
         self.app = app
@@ -44,6 +56,10 @@ class Frame1: # CRUDL FRAME
         self.acquired_list = app.getStudentDb()
         self.page = 1
         self.maxPage = ceil(len(self.acquired_list)/12)
+
+        self.stud_label = {"First N":43, "Last N":47, "Sex":55, "ID#":66, "Year Level":43, "College":35, "Code":45}
+        self.col_label = {"College":43, "Program Code":28, "Program Name": 185}
+
         self.create_widgets(app)
 
     def create_widgets(self, app):
@@ -57,7 +73,7 @@ class Frame1: # CRUDL FRAME
         self.top_frame_container.pack()
         self.top_frame.pack(pady=(20,0))
 
-        self.add_student_button = ttk.Button(self.top_frame_container, width=5, text="Add", command=lambda: app.transition_frames(app.frame3_obj))
+        self.add_student_button = ttk.Button(self.top_frame_container, width=5, text="Add", command=lambda: self.add_button_func())
         self.settings_button = ttk.Button(self.top_frame_container, text="Settings", command=lambda: app.transition_frames(app.frame4_obj))
         self.add_student_button.pack(side="left")
         self.search_entry.pack(side="left", padx=100)
@@ -126,6 +142,8 @@ class Frame1: # CRUDL FRAME
         for student in temp:
             MiniProfile(self.app, self.bot_frame, student)
 
+    def add_button_func(self):
+        self.app.transition_frames(self.app.frame3_obj)
     def page_entry_upd(self, *args):
         ev = self.page_entry_var.get() # entry value
         if ev.isnumeric():
@@ -137,12 +155,11 @@ class Frame1: # CRUDL FRAME
             self.show_list()
 
     def label_frame_upd(self, int_label):
-        stud_label = {"First N":43, "Last N":47, "Sex":55, "ID#":66, "Year Level":43, "College":35, "Code":45}
-        col_label = {"College":43, "Program Code":28, "Program Name": 185}
+
         if int_label == 0:
-            labels = stud_label
+            labels = self.stud_label
         elif int_label == 1:
-            labels = col_label
+            labels = self.col_label
         for i in self.labels_frame.winfo_children():
             i.pack_forget()
         for i in list(labels.keys()):
@@ -516,7 +533,7 @@ class Frame4: # SETTINGS FRAME
         self.list_label = tk.Label(self.list_frame, text="List Mode: ")
         self.list_label.pack(side="left")
 
-        self.list_cb = ttk.Combobox(self.list_frame, state='readonly', values=["Students", "Programs"], width=8)
+        self.list_cb = ttk.Combobox(self.list_frame, state='readonly', values=["Students", "Programs", "Colleges"], width=8)
         self.list_cb.pack(side="right")
         self.list_cb.set("Students")
 
@@ -562,11 +579,14 @@ class Frame4: # SETTINGS FRAME
         elif self.list_cb.get() == "Programs":
             self.app.list_mode = 1
             self.app.transition_frames(self.app.frame1_obj)
+        elif self.list_cb.get() == "Colleges":
+            self.app.list_mode = 2
+            self.app.transition_frames(self.app.frame8_obj)
 
     def transition(self):
         self.frame4.pack()
 
-class Frame5: # ADD COLLEGE FRAME
+class Frame5: # ADD PROGRAM FRAME
     def __init__(self, app):
         self.app = app
         self.create_widgets(app)
@@ -603,7 +623,7 @@ class Frame5: # ADD COLLEGE FRAME
         self.add_button = ttk.Button(self.AC_frame,  text="ADD", command=self.add_button_func)
         self.add_button.pack(side='top', pady=(10, 0))
 
-        # Remove College Frame
+        # Remove PrograM Frame
         self.RC_Frame = tk.Frame(self.frame5, width=200, height=200, bg=app.getColor(1))
         self.RC_Frame.pack(pady=(30,0))
 
@@ -665,7 +685,7 @@ class Frame5: # ADD COLLEGE FRAME
     def transition(self):
         self.frame5.pack()
 
-class Frame6(Frame3):
+class Frame6(Frame3): # EDIT STUDENT FRAME
     def add_student(self, values):
         self.app.replace_student(self.app.getMainStud()[ID], values)
 
@@ -726,3 +746,113 @@ class Frame6(Frame3):
             self.college_code_cb.set(self.app.getMainStud()[CCODE])
             self.update_program_values(None)
             self.program_code_cb.set(self.app.getMainStud()[PCODE])
+
+class Frame7(Frame5): # ADD COLLEGE FRAME
+    def create_widgets(self, app):
+        self.frame5 = tk.Frame(app.getRoot(), bg=app.getColor(0))
+        self.frame5.pack()
+        # Add College Frame
+        self.AC_frame = tk.Frame(self.frame5, width=300, height=200, bg=app.getColor(1))
+        self.AC_frame.pack(pady=(20, 0), side='top')
+
+        AC_frames = []
+        for i in range(0, 2):
+            AC_frames.append(tk.Frame(self.AC_frame, width=270, height=30, bg="white"))
+            AC_frames[i].pack_propagate(False)
+            AC_frames[i].pack(side='top', pady=(10, 0))
+
+        self.college_code_label = tk.Label(AC_frames[0], text="College Code", font=('helvetica', 15))
+        self.college_code_label.pack(side='left', padx=(0, 20))
+        self.college_code_entry = ttk.Entry(AC_frames[0], width=10, font=('helvetica', 15))
+        self.college_code_entry.pack(side='right')
+
+        self.college_name_label = tk.Label(AC_frames[1], text="Program Code", font=('helvetica', 15))
+        self.college_name_label.pack(side='left')
+        self.college_name_entry = ttk.Entry(AC_frames[1], width=10, font=('helvetica', 15))
+        self.college_name_entry.pack(side='right')
+
+        self.add_button = ttk.Button(self.AC_frame,  text="ADD", command=self.add_button_func)
+        self.add_button.pack(side='top', pady=(10, 0))
+
+        # Remove College Frame
+        self.RC_Frame = tk.Frame(self.frame5, width=200, height=200, bg=app.getColor(1))
+        self.RC_Frame.pack(pady=(30,0))
+
+        RC_Frames = []
+        for i in range(0, 1):
+            RC_Frames.append(tk.Frame(self.RC_Frame, width=270, height=30, bg="white"))
+            RC_Frames[i].pack_propagate(False)
+            RC_Frames[i].pack(pady=(10,0))
+
+        self.rcollege_code_label = tk.Label(RC_Frames[0], text="College", font=('helvetica', 15))
+        self.rcollege_code_label.pack(side='left')
+        self.rcollege_code_cb = ttk.Combobox(RC_Frames[0], width=10, font=('helvetica', 15), values=app.getProgramsList(), state='readonly')
+        self.rcollege_code_cb.pack(side='right')
+        self.remove_button = ttk.Button(self.RC_Frame, text="Remove", command=self.remove_button_func)
+        self.remove_button.pack(pady=(10, 0))
+
+        self.exit_button = ttk.Button(self.frame5, text="Exit", command=self.exit_button_func)
+        self.exit_button.pack(side='top', pady=(10, 0))
+
+    def upd_rprogram_code_cb(self, e):
+        pass
+
+    def add_button_func(self):
+        self.app.add_college([self.college_name_entry.get(), self.college_code_entry.get()])
+        self.exit_button_func()
+        
+        self.college_code_entry.delete(0, tk.END)
+        self.college_name_entry.delete(0, tk.END)
+
+        self.rcollege_code_cb.config(values=[])
+
+    def remove_button_func(self):
+        self.app.delete_college(self.rcollege_code_cb.get())
+        self.exit_button_func()
+
+        self.rcollege_code_cb.set('')
+        self.rcollege_code_cb.config(values=[])
+
+    def exit_button_func(self):
+        self.app.transition_frames(self.app.frame8_obj)
+
+    def transition(self):
+        self.app.updateColleges_database()
+        self.rcollege_code_cb.config(values=self.app.colleges_list)
+        self.frame5.pack()
+
+
+class Frame8(Frame1):   # CRUDL COLLEGES
+    def __init__(self, app):
+        self.app = app
+        self.entry_str_var = tk.StringVar()
+        self.entry_str_var.trace_add(mode="write", callback=self.on_entry_updated)
+        self.acquired_list = app.colleges_database
+        self.page = 1
+        self.maxPage = ceil(len(self.acquired_list)/12)
+        self.create_widgets(app)
+
+    def show_list(self):
+        self.add_student_button.configure(command=lambda: self.app.transition_frames(self.app.frame7_obj))
+        self.maxPage = ceil(len(self.acquired_list)/12)
+        self.page_label2_var.set(f"of {self.maxPage}")
+        for widget in self.bot_frame.winfo_children():
+            widget.pack_forget()
+        for i in range((self.page - 1) * 12, self.page * 12):
+            if i < len(self.acquired_list):
+                MiniProfile(self.app, self.bot_frame, self.acquired_list[i])
+
+    def label_frame_upd(self, int_label):
+
+        labels = {"College Name":235, "College Code":210}
+        for i in self.labels_frame.winfo_children():
+            i.pack_forget()
+        for i in list(labels.keys()):
+            self.label_ = tk.Label(master=self.labels_frame, bg=self.app.getColor(2), text=i)
+            self.label_.pack(side="left", padx=(labels[i],0))
+
+
+    def transition(self):
+        self.acquired_list = self.app.colleges_database
+        self.frame1.pack()
+        self.show_list()
