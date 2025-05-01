@@ -109,15 +109,15 @@ class StudentProfileApp:
         self.colleges_database.append(data)
         dm.write_data("./database/colleges.csv", self.colleges_database, 2)
 
-        self.updateCollegesList()
         self.updateColleges_database()
+        self.updateCollegesList()
 
     def delete_college(self, code):
         self.colleges_database = [coll for coll in self.colleges_database if coll[1] != code]
         dm.write_data("./database/colleges.csv", self.colleges_database, 2)
 
-        self.updateCollegesList()
         self.updateColleges_database()
+        self.updateCollegesList()
 
     def updateProgramsList(self):
         for i in self.programs_database:
