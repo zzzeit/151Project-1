@@ -1,4 +1,5 @@
 import tkinter as tk
+import tkinter.messagebox as messagebox
 import datetime as dt
 
 import data_management as dm
@@ -63,10 +64,15 @@ class StudentProfileApp:
 
     def sort_students(self, key_index=0, ascending=True):
         self.students_database = sorted(self.students_database, key=lambda student: student[key_index], reverse=not ascending)
-
-    def delete_student(self, student_id):
-        self.students_database = [student for student in self.students_database if student[3] != student_id]
-        dm.write_data("./database/students.csv", self.students_database)
+    def sort_programs(self, key_index=0, ascending=True):
+        self.programs_database = sorted(self.programs_database, key=lambda program: program[key_index], reverse=not ascending)
+    def sort_colleges(self, key_index=0, ascending=True):
+        self.colleges_database = sorted(self.colleges_database, key=lambda college: college[key_index], reverse=not ascending)
+    def delete_student(self, student_id, alert=True):
+        confirm = messagebox.askyesno("Delete Student", "Are you sure you want to delete this student?")
+        if confirm and alert:
+            self.students_database = [student for student in self.students_database if student[3] != student_id]
+            dm.write_data("./database/students.csv", self.students_database)
 
     def add_student(self, data):
         self.students_database.append(data)
@@ -98,12 +104,18 @@ class StudentProfileApp:
         self.updateProgramsList()
         self.updatePrograms_database()
 
-    def delete_program(self, code):
-        self.programs_database = [coll for coll in self.programs_database if coll[1] != code]
-        dm.write_data("./database/programs.csv", self.programs_database, 1)
+    def delete_program(self, code, alert=True):
+        confirm = messagebox.askyesno("Delete Program", "Are you sure you want to delete this program?")
+        if confirm and alert:
+            self.programs_database = [coll for coll in self.programs_database if coll[1] != code]
+            dm.write_data("./database/programs.csv", self.programs_database, 1)
 
-        self.updateProgramsList()
-        self.updatePrograms_database()
+            self.updateProgramsList()
+            self.updatePrograms_database()
+
+            for i in self.students_database:
+                if i[6] == code:
+                    self.delete_student(i[3])
     
     def add_college(self, data):
         self.colleges_database.append(data)
@@ -113,11 +125,18 @@ class StudentProfileApp:
         self.updateCollegesList()
 
     def delete_college(self, code):
-        self.colleges_database = [coll for coll in self.colleges_database if coll[1] != code]
-        dm.write_data("./database/colleges.csv", self.colleges_database, 2)
+        confirm = messagebox.askyesno("Delete College", "Are you sure you want to delete this college?")
+        if confirm:
+            self.colleges_database = [coll for coll in self.colleges_database if coll[1] != code]
+            dm.write_data("./database/colleges.csv", self.colleges_database, 2)
 
-        self.updateColleges_database()
-        self.updateCollegesList()
+            self.updateColleges_database()
+            self.updateCollegesList()
+
+            for i in self.programs_database:
+                if i[0] == code:
+                    self.delete_program(i[1], False)
+
 
     def updateProgramsList(self):
         for i in self.programs_database:

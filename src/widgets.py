@@ -524,6 +524,9 @@ class Frame3:
 class Frame4: # SETTINGS FRAME
     def __init__(self, app):
         self.app = app
+        self.searchValues = {"First Name" : 0, "Last Name" : 1, "ID#" : 3, "Year Level" : 4}
+        self.searchValuesProgram = {"College Code" : 0, "Program Code" : 1}
+        self.searchValuesCollege = {"College Name" : 0, "College Code" : 1}
         self.create_widgets(app)
 
     def create_widgets(self, app):
@@ -540,7 +543,7 @@ class Frame4: # SETTINGS FRAME
 
         self.list_cb = ttk.Combobox(self.list_frame, state='readonly', values=["Students", "Programs", "Colleges"], width=8)
         self.list_cb.pack(side="right")
-        self.list_cb.set("Students")
+        self.list_cb.bind("<<ComboboxSelected>>", self.cboxEvent)
 
         # Search By
         self.search_frame = tk.Frame(self.frame4, width=150, height=20)
@@ -550,10 +553,9 @@ class Frame4: # SETTINGS FRAME
         self.search_label = tk.Label(self.search_frame, text="Search By: ")
         self.search_label.pack(side="left")
 
-        self.searchValues = {"First Name" : 0, "Last Name" : 1, "ID#" : 3, "Year Level" : 4}
+
         self.search_cb = ttk.Combobox(self.search_frame, state='readonly', values=list(self.searchValues.keys()), width=8)
         self.search_cb.pack(side="right")
-        self.search_cb.set("First Name")
 
         # Sort By
         self.sort_frame = tk.Frame(self.frame4, width=150, height=20)
@@ -566,15 +568,19 @@ class Frame4: # SETTINGS FRAME
         self.sortValues = {"Ascending" : True, "Descending" : False}
         self.sort_cb = ttk.Combobox(self.sort_frame, state='readonly', values=list(self.sortValues.keys()), width=8)
         self.sort_cb.pack(side="right")
-        self.sort_cb.set("Ascending")
 
         # Done
         self.done_button = ttk.Button(self.frame4, text="DONE", command=self.done_button)
         self.done_button.pack(pady=10)
 
-        
+    def cboxEvent(self, event):
+        if self.list_cb.get() == "Students":
+            self.search_cb['values'] = list(self.searchValues.keys())
+        elif self.list_cb.get() == "Programs":
+            self.search_cb['values'] = list(self.searchValuesProgram.keys())
+        elif self.list_cb.get() == "Colleges":
+            self.search_cb['values'] = list(self.searchValuesCollege.keys())
 
-    
     def done_button(self):
         if self.list_cb.get() == "Students":
             self.app.setSearchSet(self.searchValues[self.search_cb.get()])
@@ -582,13 +588,34 @@ class Frame4: # SETTINGS FRAME
             self.app.list_mode = 0
             self.app.transition_frames(self.app.frame1_obj)
         elif self.list_cb.get() == "Programs":
+            self.app.setSearchSet(self.searchValuesProgram[self.search_cb.get()])
+            self.app.sort_programs(self.searchValuesProgram[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
             self.app.list_mode = 1
             self.app.transition_frames(self.app.frame1_obj)
         elif self.list_cb.get() == "Colleges":
+            self.app.setSearchSet(self.searchValuesCollege[self.search_cb.get()])
+            self.app.sort_colleges(self.searchValuesCollege[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
             self.app.list_mode = 2
             self.app.transition_frames(self.app.frame8_obj)
 
+    def updateValues(self):
+        if self.app.list_mode == 0:
+            self.search_cb['values'] = list(self.searchValues.keys())
+            self.sort_cb['values'] = list(self.sortValues.keys())
+        elif self.app.list_mode == 1:
+            self.search_cb['values'] = ["College Code", "Program Code"]
+            self.sort_cb['values'] = ["Ascending", "Descending"]
+            self.search_cb.set("College Code")
+            self.sort_cb.set("Ascending")
+        elif self.app.list_mode == 2:
+            self.search_cb['values'] = ["College Name", "College Code"]
+            self.sort_cb['values'] = ["Ascending", "Descending"]
+            self.search_cb.set("College Name")
+            self.sort_cb.set("Ascending")
+
     def transition(self):
+        self.updateValues()
+
         self.frame4.pack()
 
 class Frame5: # ADD PROGRAM FRAME
