@@ -614,8 +614,10 @@ class Frame4: # SETTINGS FRAME
             self.sort_cb.set("Ascending")
 
     def transition(self):
+        self.list_cb.set('')
+        self.search_cb.set('')
+        self.sort_cb.set('')
         self.updateValues()
-
         self.frame4.pack()
 
 class Frame5: # ADD PROGRAM FRAME
