@@ -198,11 +198,14 @@ class Frame2:
         self.header.pack_propagate(False)
         self.header.pack()
 
-        self.back_button = ttk.Button(self.header, text="Back", width=5, command=lambda: app.transition_frames(app.frame1_obj))
+        self.back_button = ttk.Button(self.header, text="Back", width=5, command=lambda: [app.transition_frames(app.frame1_obj), app.setMainStud(None)])
         self.back_button.pack(side="left", padx=10)
 
         self.delete_button = ttk.Button(self.header, text="Delete", width=6, command=lambda: [app.delete_student(app.getMainStud()[ID]), app.transition_frames(app.frame1_obj)])
         self.delete_button.pack(side="right", padx=10)
+
+        self.edit_button = ttk.Button(self.header, text="Edit", width=6, command=lambda: [app.transition_frames(app.frame6_obj), app.setMainStud(app.getMainStud())])
+        self.edit_button.pack(side="right", padx=10)
 
         self.body1 = tk.Frame(self.frame2, width=682.5, height=300, bg=app.getColor(0))
         self.body1.pack_propagate(False)
@@ -473,15 +476,15 @@ class Frame3:
             return
         
         values[YRLVL] = values[YRLVL][:3]
-        studdb = self.app.getStudentDb()
-        studdb.append(values)
-        write_data("./database/students.csv", studdb)
+        self.add_student(values)
         self.clear_entries()
+        self.app.setMainStud(None)
 
     def alert_message(self, title, text):
         tk.messagebox.showerror(title, text)
 
-
+    def add_student(self, values):
+        self.app.add_student(values)
     def clear_entries(self):
         for e in self.entries:
             if isinstance(e, ttk.Entry):
@@ -513,7 +516,7 @@ class Frame4: # SETTINGS FRAME
         self.list_label = tk.Label(self.list_frame, text="List Mode: ")
         self.list_label.pack(side="left")
 
-        self.list_cb = ttk.Combobox(self.list_frame, state='readonly', values=["Students", "Colleges"], width=8)
+        self.list_cb = ttk.Combobox(self.list_frame, state='readonly', values=["Students", "Programs"], width=8)
         self.list_cb.pack(side="right")
         self.list_cb.set("Students")
 
@@ -556,7 +559,7 @@ class Frame4: # SETTINGS FRAME
             self.app.sort_students(self.searchValues[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
             self.app.list_mode = 0
             self.app.transition_frames(self.app.frame1_obj)
-        elif self.list_cb.get() == "Colleges":
+        elif self.list_cb.get() == "Programs":
             self.app.list_mode = 1
             self.app.transition_frames(self.app.frame1_obj)
 
@@ -582,17 +585,17 @@ class Frame5: # ADD COLLEGE FRAME
             AC_frames[i].pack_propagate(False)
             AC_frames[i].pack(side='top', pady=(10, 0))
 
-        self.college_label = tk.Label(AC_frames[0], text="College", font=('helvetica', 15))
+        self.college_label = tk.Label(AC_frames[0], text="College Code", font=('helvetica', 15))
         self.college_label.pack(side='left', padx=(0, 20))
         self.college_entry = ttk.Entry(AC_frames[0], width=10, font=('helvetica', 15))
         self.college_entry.pack(side='right')
 
-        self.program_code_label = tk.Label(AC_frames[1], text="Course Code", font=('helvetica', 15))
+        self.program_code_label = tk.Label(AC_frames[1], text="Program Code", font=('helvetica', 15))
         self.program_code_label.pack(side='left')
         self.program_code_entry = ttk.Entry(AC_frames[1], width=10, font=('helvetica', 15))
         self.program_code_entry.pack(side='right')
 
-        self.program_name_label = tk.Label(AC_frames[2], text="Course Name", font=('helvetica', 15))
+        self.program_name_label = tk.Label(AC_frames[2], text="Program Name", font=('helvetica', 15))
         self.program_name_label.pack(side='left')
         self.program_name_entry = ttk.Entry(AC_frames[2], width=10, font=('helvetica', 15))
         self.program_name_entry.pack(side='right')
@@ -610,13 +613,13 @@ class Frame5: # ADD COLLEGE FRAME
             RC_Frames[i].pack_propagate(False)
             RC_Frames[i].pack(pady=(10,0))
 
-        self.rcollege_label = tk.Label(RC_Frames[0], text="College", font=('helvetica', 15))
+        self.rcollege_label = tk.Label(RC_Frames[0], text="College Code", font=('helvetica', 15))
         self.rcollege_label.pack(side='left')
         self.rcollege_cb = ttk.Combobox(RC_Frames[0], width=10, font=('helvetica', 15), values=app.getProgramsList(), state='readonly')
         self.rcollege_cb.pack(side='right')
         self.rcollege_cb.bind('<<ComboboxSelected>>', self.upd_rprogram_code_cb)
 
-        self.rprogram_code_label = tk.Label(RC_Frames[1], text="Course Code", font=('helvetica', 15))
+        self.rprogram_code_label = tk.Label(RC_Frames[1], text="Program Code", font=('helvetica', 15))
         self.rprogram_code_label.pack(side='left')
         self.rprogram_code_cb = ttk.Combobox(RC_Frames[1], width=10, font=('helvetica', 15), state='readonly')
         self.rprogram_code_cb.pack(side='right')
@@ -662,3 +665,64 @@ class Frame5: # ADD COLLEGE FRAME
     def transition(self):
         self.frame5.pack()
 
+class Frame6(Frame3):
+    def add_student(self, values):
+        self.app.replace_student(self.app.getMainStud()[ID], values)
+
+    def submit_func(self):
+        self.entries = [self.first_name_entry, self.last_name_entry, self.sex_cb, self.id_num_entry, 
+                   self.year_level_cb, self.college_code_cb, self.program_code_cb]
+        values = []
+        for e in self.entries:
+            if not e.get():
+                self.alert_message("Input Error", "All fields must be filled out.")
+                return
+            values.append(e.get())
+        values[FNAME] = values[FNAME].capitalize()
+        values[LNAME] = values[LNAME].capitalize()
+        # Name Error
+        for c in values[FNAME].replace(" ", ""):
+            if not c.isalpha():
+                self.alert_message("Input Error", "First Name must not contain digits or any symbols.")
+                return
+        for c in values[LNAME].replace(" ", ""):
+            if not c.isalpha():
+                self.alert_message("Input Error", "Last Name must not contain digits or any symbols.")
+                return
+
+        # ID Number error
+        if "-" in values[ID]:
+            values[ID] = values[ID].replace("-", "")
+
+        for c in values[ID]:
+            if c.isalpha():
+                self.alert_message("Input Error", "ID Number must only contain digits or '-'.")
+                return
+        
+        if len(values[ID]) != 8:
+            self.alert_message("Input Error", "ID Numbers must be 8 digits.")
+            return
+
+        
+        values[YRLVL] = values[YRLVL][:3]
+        self.add_student(values)
+        self.clear_entries()
+        self.app.setMainStud(None)
+
+    def transition(self):
+        super().transition()
+        self.app.modify_mode = False
+        if self.app.getMainStud() is not None:
+
+            self.first_name_entry.delete(0, tk.END)
+            self.first_name_entry.insert(0, self.app.getMainStud()[FNAME])
+            self.last_name_entry.delete(0, tk.END)
+            self.last_name_entry.insert(0, self.app.getMainStud()[LNAME])
+            if self.app.getMainStud() is not None:
+                self.id_num_entry.delete(0, tk.END)
+                self.id_num_entry.insert(0, str(self.app.getMainStud()[ID])[:4] + "-" + str(self.app.getMainStud()[ID])[4:8])
+                self.sex_cb.set(self.app.getMainStud()[SEX])
+            self.year_level_cb.set(self.app.getMainStud()[YRLVL] + " Year")
+            self.college_code_cb.set(self.app.getMainStud()[CCODE])
+            self.update_program_values(None)
+            self.program_code_cb.set(self.app.getMainStud()[PCODE])

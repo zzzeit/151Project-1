@@ -12,6 +12,8 @@ class StudentProfileApp:
         self.root.geometry('700x640')
         self.root.resizable(False, False)
 
+        # FLAGS
+        self.modify_mode = False
 
         self.students_database = dm.load_data("./database/students.csv")
         self.programs_database = dm.load_data("./database/programs.csv")
@@ -38,7 +40,7 @@ class StudentProfileApp:
         self.frame3_obj = ws.Frame3(self)
         self.frame4_obj = ws.Frame4(self)
         self.frame5_obj = ws.Frame5(self)
-        self.frame6_obj = ws.Frame3(self)
+        self.frame6_obj = ws.Frame6(self)
         self.transition_frames(self.frame1_obj)
 
 
@@ -60,6 +62,29 @@ class StudentProfileApp:
     def delete_student(self, student_id):
         self.students_database = [student for student in self.students_database if student[3] != student_id]
         dm.write_data("./database/students.csv", self.students_database)
+
+    def add_student(self, data):
+        self.students_database.append(data)
+        dm.write_data("./database/students.csv", self.students_database)
+
+        self.updateProgramsList()
+        self.updatePrograms_database()
+
+    def replace_student(self, student_id, data):
+        for i, student in enumerate(self.students_database):
+            if student[3] == student_id:
+                self.students_database[i] = data
+                break
+        dm.write_data("./database/students.csv", self.students_database)
+
+        self.updateProgramsList()
+        self.updatePrograms_database()
+
+    def check_student(self, student_id):
+        for student in self.students_database:
+            if student[3] == student_id:
+                return True
+        return False
 
     def add_program(self, data):
         self.programs_database.append(data)
@@ -117,7 +142,7 @@ class StudentProfileApp:
             if i[0] not in self.programs_list:
                 self.programs_list.append(i[0])
 
-    def updateprograms_database(self):
+    def updatePrograms_database(self):
         self.programs_database = dm.load_data("./database/programs.csv")
 
 
