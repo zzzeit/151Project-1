@@ -4,6 +4,7 @@ import datetime as dt
 
 import data_management as dm
 import widgets as ws
+import mysql.connector as connector
 
 
 class StudentProfileApp:
@@ -193,12 +194,18 @@ class StudentProfileApp:
         self.main_program = program
 
 
-        
 
 def main():
     root = tk.Tk()
     app = StudentProfileApp(root)
     root.mainloop()
+
+DB_CONFIG = {
+    'host': '127.0.0.1',       # Or your DB host IP/domain
+    'user': 'root',    # Your MySQL username
+    'password': 'admin', # Your MySQL password
+    'database': 'ssis' # The database name
+}
 
 if __name__ == "__main__":
     main()
