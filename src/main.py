@@ -15,12 +15,18 @@ class StudentProfileApp:
         self.root.resizable(False, False)
 
         # FLAGS
+        self.filter_dict = [{"None" : 0, "Sex" : 1, "Year Level" : 2, "College Code" : 3, "Program Code" : 4}, 
+                             {"None" : 0, "College Code" : 1, "Program Code" : 2},
+                             {"None" : 0, "College Code" : 1}]
         self.modify_mode = False
+        self.list_mode = 0
+        self.filter_mode = None
+        self.filter_value = None
 
         self.students_database = dm.load_data("./database/students.csv")
         self.programs_database = dm.load_data("./database/programs.csv")
         self.colleges_database = dm.load_data("./database/colleges.csv")
-        self.list_mode = 0
+
         self.current_year = dt.datetime.now().year
 
         self.programs_list = []
@@ -163,9 +169,6 @@ class StudentProfileApp:
         return self.root
 
     
-    def getStudentDb(self):
-        return self.students_database
-    
     def getProgramDb(self):
         return self.programs_database
     
@@ -201,10 +204,10 @@ def main():
     root.mainloop()
 
 DB_CONFIG = {
-    'host': '127.0.0.1',       # Or your DB host IP/domain
-    'user': 'root',    # Your MySQL username
-    'password': 'admin', # Your MySQL password
-    'database': 'ssis' # The database name
+    'host': '127.0.0.1',
+    'user': 'root',
+    'password': 'admin',
+    'database': 'ssis'
 }
 
 if __name__ == "__main__":

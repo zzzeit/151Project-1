@@ -2,7 +2,14 @@ import json
 import csv
 import os
 
-
+# COLLEGES
+CNAME_ = 0
+CCODE_ = 1
+# PROGRAMS
+ccode = 0
+pcode = 1
+pname = 2
+# STUDENTS
 FNAME = 0
 LNAME = 1
 SEX = 2
