@@ -167,6 +167,8 @@ class Frame1: # CRUDL FRAME
             self.label_.pack(side="left", padx=(labels[i],0))
 
     def show_list(self):
+        for widget in self.bot_frame.winfo_children():
+            widget.pack_forget()
         if self.app.filter_mode != None:
             self.filter_list()
         if self.app.list_mode == 0:
@@ -175,18 +177,17 @@ class Frame1: # CRUDL FRAME
             self.add_student_button.configure(command=lambda: self.app.transition_frames(self.app.frame5_obj))
         self.maxPage = ceil(len(self.acquired_list)/12)
         self.page_label2_var.set(f"of {self.maxPage}")
-        for widget in self.bot_frame.winfo_children():
-            widget.pack_forget()
         for i in range((self.page - 1) * 12, self.page * 12):
             if i < len(self.acquired_list):
                 MiniProfile(self.app, self.bot_frame, self.acquired_list[i])
-
     def filter_list(self):
         temp = []
         for i in self.acquired_list:
+            print(self.app.filter_mode, self.app.filter_value)
             if i[self.app.filter_mode] == self.app.filter_value:
                 temp.append(i)
         self.acquired_list = temp
+
 
     def prev_page(self):
         if self.page > 1:
@@ -200,7 +201,15 @@ class Frame1: # CRUDL FRAME
             self.show_list()
             self.page_entry_var.set(f"{self.page}")
 
+    def go_to_page(self, page):
+        if page > 0 and page <= self.maxPage:
+            self.page = page
+            self.show_list()
+            self.page_entry_var.set(f"{self.page}")
+
     def transition(self):
+        self.page = 1
+        self.page_entry_var.set("1")
         self.frame1.pack()
         if self.app.list_mode == 0:
             self.acquired_list = self.app.students_database
@@ -209,6 +218,7 @@ class Frame1: # CRUDL FRAME
             self.acquired_list = self.app.getProgramDb()
             self.label_frame_upd(1)
         self.show_list()
+
 
     def getMainFrame(self):
         return self.frame1
@@ -629,27 +639,27 @@ class Frame4: # SETTINGS FRAME
         elif not self.sort_cb.get():
             messagebox.showerror("Input Error", "Please select a sort type.")
             return
+        self.app.filter_value = self.filter_entry.get()
 
         if self.list_cb.get() == "Students":
             self.app.setSearchSet(self.searchValues[self.search_cb.get()])
             self.app.sort_students(self.searchValues[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
             self.app.list_mode = 0
-            self.app.transition_frames(self.app.frame1_obj)
             self.app.filter_mode = self.filterValues[0][self.filter_cb.get()]
+            self.app.transition_frames(self.app.frame1_obj)
         elif self.list_cb.get() == "Programs":
             self.app.setSearchSet(self.searchValuesProgram[self.search_cb.get()])
             self.app.sort_programs(self.searchValuesProgram[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
             self.app.list_mode = 1
-            self.app.transition_frames(self.app.frame1_obj)
             self.app.filter_mode = self.filterValues[1][self.filter_cb.get()]
+            self.app.transition_frames(self.app.frame1_obj)
         elif self.list_cb.get() == "Colleges":
             self.app.setSearchSet(self.searchValuesCollege[self.search_cb.get()])
             self.app.sort_colleges(self.searchValuesCollege[self.search_cb.get()], self.sortValues[self.sort_cb.get()])
             self.app.list_mode = 2
-            self.app.transition_frames(self.app.frame8_obj)
             self.app.filter_mode = self.filterValues[2][self.filter_cb.get()]
+            self.app.transition_frames(self.app.frame8_obj)
 
-        self.app.filter_value = self.filter_entry.get()
 
         
 
@@ -932,7 +942,9 @@ class Frame8(Frame1):   # CRUDL COLLEGES
         self.create_widgets(app)
 
     def show_list(self):
-        self.filter_list()
+        print(self.app.filter_mode)
+        if self.app.filter_mode is not None:
+            self.filter_list()
         self.add_student_button.configure(command=lambda: self.app.transition_frames(self.app.frame7_obj))
         self.maxPage = ceil(len(self.acquired_list)/12)
         self.page_label2_var.set(f"of {self.maxPage}")
