@@ -34,6 +34,7 @@ class StudentProfileApp:
 
         self.main_student = None
         self.main_program = None
+        self.main_college = None
 
         self.search_setting = 0
         self.themeColors = ["#454148", "#5c5960", "#757278", "#8f8d92"]
@@ -54,6 +55,8 @@ class StudentProfileApp:
         self.frame6_obj = ws.Frame6(self)
         self.frame7_obj = ws.Frame7(self)
         self.frame8_obj = ws.Frame8(self)
+        self.frame_edit_program_obj = ws.FrameEditProgram(self)
+        self.frame_edit_college_obj = ws.FrameEditCollege(self)
         self.transition_frames(self.frame1_obj)
 
 
@@ -123,6 +126,21 @@ class StudentProfileApp:
             for i in self.students_database:
                 if i[6] == code:
                     self.delete_student(i[3])
+
+    def update_program(self, program_code, data):
+        for i, program in enumerate(self.programs_database):
+            if program[1] == program_code:
+                self.programs_database[i] = data
+                break
+        dm.write_data("./database/programs.csv", self.programs_database, 1)
+
+
+        for student in self.students_database:
+            if student[6] == program_code:
+                self.replace_student(student[3], student[:5] + [data[0]] + [data[1]])
+
+        self.updateProgramsList()
+        self.updatePrograms_database()
     
     def add_college(self, data):
         self.colleges_database.append(data)
@@ -144,6 +162,19 @@ class StudentProfileApp:
                 if i[0] == code:
                     self.delete_program(i[1], False)
 
+    def update_college(self, college_code, data):
+        for i, college in enumerate(self.colleges_database):
+            if college[1] == college_code:
+                self.colleges_database[i] = data
+                break
+        dm.write_data("./database/colleges.csv", self.colleges_database, 2)
+
+        self.updateColleges_database()
+        self.updateCollegesList()
+
+        for program in self.programs_database:
+            if program[0] == college_code:
+                self.update_program(program[1], [data[1]] + [program[1]] + [program[2]])
 
     def updateProgramsList(self):
         for i in self.programs_database:
@@ -193,8 +224,10 @@ class StudentProfileApp:
     def setMainStud(self, student):
         self.main_student = student
 
-    def setMainColl(self, program):
+    def setMainProg(self, program):
         self.main_program = program
+    def setMainColl(self, college):
+        self.main_college = college
 
 
 

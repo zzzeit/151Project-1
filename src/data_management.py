@@ -19,7 +19,7 @@ CCODE = 5
 PCODE = 6
 
 def write_data(filename, data, int=0):
-    v = ["fname","lname","sex","ID#","year lvl","program code"]
+    v = ["fname","lname","sex","ID#","year lvl","college code","program code"]
     if int == 1:
         v = ["College","Course Code","Course Name"]
     elif int == 2:

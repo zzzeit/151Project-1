@@ -25,7 +25,7 @@ class MiniProfile:
                 l.bind("<Button-1>", lambda event: [app.setMainStud(list_element), app.transition_frames(app.frame2_obj)])
             
         elif app.list_mode == 1:
-            frame.unbind("<Button-1>")
+            frame.bind("<Button-1>", lambda event: [app.setMainProg(list_element), app.transition_frames(app.frame_edit_program_obj)])
             for i in range(0, len(list_element)):
                 t = list_element[i]
                 w = 11
@@ -34,10 +34,10 @@ class MiniProfile:
                 l = tk.Label(frame, text=t, bg=app.getColor(2), width=w)
                 l.pack_propagate(False)
                 l.pack(padx=(3, 0), side="left")
-                l.unbind("<Button-1>")
+                l.bind("<Button-1>", lambda event: [app.setMainProg(list_element), app.transition_frames(app.frame_edit_program_obj)])
 
         elif app.list_mode == 2:
-            frame.unbind("<Button-1>")
+            frame.bind("<Button-1>", lambda event: [app.setMainColl(list_element), app.transition_frames(app.frame_edit_college_obj)])
             for i in range(0, len(list_element)):
                 t = list_element[i]
                 w = 70
@@ -46,7 +46,7 @@ class MiniProfile:
                 l = tk.Label(frame, text=t, bg=app.getColor(2), width=w)
                 l.pack_propagate(False)
                 l.pack(padx=(3, 0), side="left")
-                l.unbind("<Button-1>")
+                l.bind("<Button-1>", lambda event: [app.setMainColl(list_element), app.transition_frames(app.frame_edit_college_obj)])
 
 class Frame1: # CRUDL FRAME
     def __init__(self, app):
@@ -120,7 +120,6 @@ class Frame1: # CRUDL FRAME
 
     def on_entry_updated(self, *args):
         if not self.entry_str_var.get():
-            self.acquired_list = self.app.students_database
             self.show_list()
             return 0
 
@@ -180,13 +179,16 @@ class Frame1: # CRUDL FRAME
         for i in range((self.page - 1) * 12, self.page * 12):
             if i < len(self.acquired_list):
                 MiniProfile(self.app, self.bot_frame, self.acquired_list[i])
+
     def filter_list(self):
         temp = []
-        for i in self.acquired_list:
-            print(self.app.filter_mode, self.app.filter_value)
-            if i[self.app.filter_mode] == self.app.filter_value:
-                temp.append(i)
-        self.acquired_list = temp
+        try:
+            for i in self.acquired_list:
+                if i[self.app.filter_mode] == self.app.filter_value:
+                    temp.append(i)
+            self.acquired_list = temp
+        except:
+            pass
 
 
     def prev_page(self):
@@ -942,7 +944,6 @@ class Frame8(Frame1):   # CRUDL COLLEGES
         self.create_widgets(app)
 
     def show_list(self):
-        print(self.app.filter_mode)
         if self.app.filter_mode is not None:
             self.filter_list()
         self.add_student_button.configure(command=lambda: self.app.transition_frames(self.app.frame7_obj))
@@ -968,3 +969,103 @@ class Frame8(Frame1):   # CRUDL COLLEGES
         self.acquired_list = self.app.colleges_database
         self.frame1.pack()
         self.show_list()
+
+class FrameEditProgram:
+    def __init__(self, app):
+        self.app = app
+        self.frame = tk.Frame(app.getRoot(), bg=app.getColor(0))
+        self.frame.pack()
+
+        # Create input fields
+        self.program_code_var = tk.StringVar()
+        self.program_name_var = tk.StringVar()
+
+        self.program_code_frame = tk.Frame(self.frame, bg=app.getColor(0))
+        self.program_code_frame.pack(pady=(20, 0))
+        self.program_code_label = tk.Label(self.frame, text="Program Code:", bg=app.getColor(0))
+        self.program_code_label.pack(pady=(10, 0))
+        self.program_code_entry = ttk.Entry(self.frame, textvariable=self.program_code_var)
+        self.program_code_entry.pack(pady=(0, 10))
+
+        self.program_name_label = tk.Label(self.frame, text="Program Name:", bg=app.getColor(0))
+        self.program_name_label.pack(pady=(10, 0))
+        self.program_name_entry = ttk.Entry(self.frame, textvariable=self.program_name_var)
+        self.program_name_entry.pack(pady=(0, 10))
+
+        # Done button
+        self.done_button = ttk.Button(self.frame, text="Done", command=self.done_button_func)
+        self.done_button.pack(pady=(20, 0))
+
+        # Exit button
+        self.exit_button = ttk.Button(self.frame, text="Exit", command=lambda: self.app.transition_frames(self.app.frame1_obj))
+        self.exit_button.pack(pady=(10, 0))
+
+    def transition(self):
+        main_program = self.app.main_program
+        if main_program:
+            self.program_code_var.set(main_program[1])
+            self.program_name_var.set(main_program[2])
+        self.frame.pack()
+
+    def done_button_func(self):
+        program_code = self.program_code_var.get()
+        program_name = self.program_name_var.get()
+
+        if not program_code or not program_name:
+            messagebox.showerror("Input Error", "All fields must be filled out.")
+            return
+
+        self.app.update_program(self.app.main_program[1], [self.app.main_program[0], program_code, program_name])
+        self.app.transition_frames(self.app.frame1_obj)
+
+    def getMainFrame(self):
+        return self.frame
+
+class FrameEditCollege:
+    def __init__(self, app):
+        self.app = app
+        self.frame = tk.Frame(app.getRoot(), bg=app.getColor(0), width=300, height=200)
+        self.frame.pack()
+
+        # Create input fields
+        self.college_code_var = tk.StringVar()
+        self.college_name_var = tk.StringVar()
+
+        self.college_code_label = tk.Label(self.frame, text="College Code:", bg=app.getColor(0))
+        self.college_code_label.pack(pady=(10, 0))
+        self.college_code_entry = ttk.Entry(self.frame, textvariable=self.college_code_var)
+        self.college_code_entry.pack(pady=(0, 10))
+
+        self.college_name_label = tk.Label(self.frame, text="College Name:", bg=app.getColor(0))
+        self.college_name_label.pack(pady=(10, 0))
+        self.college_name_entry = ttk.Entry(self.frame, textvariable=self.college_name_var)
+        self.college_name_entry.pack(pady=(0, 10))
+
+        # Done button
+        self.done_button = ttk.Button(self.frame, text="Done", command=self.done_button_func)
+        self.done_button.pack(pady=(20, 0))
+
+        # Exit button
+        self.exit_button = ttk.Button(self.frame, text="Exit", command=lambda: self.app.transition_frames(self.app.frame8_obj))
+        self.exit_button.pack(pady=(10, 0))
+
+    def transition(self):
+        main_college = self.app.main_college
+        if main_college:
+            self.college_code_var.set(main_college[1])
+            self.college_name_var.set(main_college[0])
+        self.frame.pack()
+
+    def done_button_func(self):
+        college_code = self.college_code_var.get()
+        college_name = self.college_name_var.get()
+
+        if not college_code or not college_name:
+            messagebox.showerror("Input Error", "All fields must be filled out.")
+            return
+
+        self.app.update_college(self.app.main_college[1], [college_name, college_code])
+        self.app.transition_frames(self.app.frame8_obj)
+
+    def getMainFrame(self):
+        return self.frame
