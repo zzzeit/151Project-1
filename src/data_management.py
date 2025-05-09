@@ -21,7 +21,7 @@ PCODE = 6
 def write_data(filename, data, int=0):
     v = ["fname","lname","sex","ID#","year lvl","college code","program code"]
     if int == 1:
-        v = ["College","Course Code","Course Name"]
+        v = ["College","Program Code","Program Name"]
     elif int == 2:
         v = ["College Name", "College Code"]
     with open(filename, 'w', newline='') as f:
