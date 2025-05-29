@@ -333,8 +333,8 @@ class Frame2:
     def getMainFrame(self):
         return self.frame2
     
-# Add Studdent Frame
-class Frame3:
+
+class Frame3: # Add Studdent Frame
     def __init__(self, app):
         colorNum = app.getColor(2)
         self.app = app
@@ -932,8 +932,7 @@ class Frame7(Frame5): # ADD COLLEGE FRAME
         self.rcollege_code_cb.config(values=[college[1] for college in self.app.colleges_database]) # Update cbbox values
         self.frame5.pack()
 
-
-class Frame8(Frame1):   # CRUDL COLLEGES
+class Frame8(Frame1): # CRUDL COLLEGES
     def __init__(self, app):
         self.app = app
         self.entry_str_var = tk.StringVar()
