@@ -97,6 +97,7 @@ class StudentProfileApp:
             self.students_database = [student for student in self.students_database if student[3] != student_id]
             dm.write_data("./database/students.csv", self.students_database)
 
+
     def add_student(self, data):
         if self.checkStudDuplicate(data, 3):
             return True
@@ -140,9 +141,19 @@ class StudentProfileApp:
             self.updateProgramsList()
             self.updatePrograms_database()
 
+            # Null the student's program
             for i in self.students_database:
                 if i[6] == code:
-                    self.delete_student(i[3], False)
+                    i[6] = "Null"
+
+    def null_program(self, code):
+        for program in self.programs_database:
+            if program[1] == code:
+                program[0] = "Null"
+        dm.write_data("./database/programs.csv", self.programs_database, 1)
+
+        self.updateProgramsList()
+        self.updatePrograms_database()
 
     def update_program(self, program_code, data):
         for i, program in enumerate(self.programs_database):
@@ -177,8 +188,12 @@ class StudentProfileApp:
             programs_to_delete = [program for program in self.programs_database if program[0] == code]
             for program in programs_to_delete:
                 print(f"{code} == {program[1]}")
-                self.delete_program(program[1], alert=False)  # Delete each program without additional confirmation
+                self.null_program(program[1])  # Null each program without additional confirmation
 
+            for student in self.students_database:
+                if student[5] == code:
+                    student[5] = "Null"
+                    student[6] = "Null"
 
             # Update the lists and databases
             self.updateProgramsList()

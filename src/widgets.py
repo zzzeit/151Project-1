@@ -680,10 +680,10 @@ class Frame4: # SETTINGS FRAME
         self.filter_cb['values'] = []
 
     def transition(self):
-        self.list_cb.set('')
-        self.search_cb.set('')
-        self.sort_cb.set('')
-        self.filter_cb.set('')
+        # self.list_cb.set('')
+        # self.search_cb.set('')
+        # self.sort_cb.set('')
+        # self.filter_cb.set('')
         self.updateValues()
         self.app.filter_mode = None
         self.app.filter_value = None
