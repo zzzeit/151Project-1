@@ -71,6 +71,18 @@ class StudentProfileApp:
             if id == student[3]:
                 return student
         return None
+    
+    def get_program(self, program_code):
+        for program in self.programs_database:
+            if program_code == program[1]:
+                return program
+        return None
+
+    def get_college(self, college_code):
+        for college in self.colleges_database:
+            if college_code == college[1]:
+                return college
+        return None
 
     def sort_students(self, key_index=0, ascending=True):
         self.students_database = sorted(self.students_database, key=lambda student: student[key_index], reverse=not ascending)
@@ -86,6 +98,8 @@ class StudentProfileApp:
             dm.write_data("./database/students.csv", self.students_database)
 
     def add_student(self, data):
+        if self.checkStudDuplicate(data, 3):
+            return True
         self.students_database.append(data)
         dm.write_data("./database/students.csv", self.students_database)
 
@@ -201,6 +215,11 @@ class StudentProfileApp:
     
     def updateColleges_database(self):
         self.colleges_database = dm.load_data("./database/colleges.csv")
+
+    def checkStudDuplicate(self, data, property):
+        for i in self.students_database:
+            if i[property] == data:
+                return True 
 
     # Getter methods
     def getColor(self, index):

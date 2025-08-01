@@ -334,7 +334,7 @@ class Frame2:
         return self.frame2
     
 
-class Frame3: # Add Studdent Frame
+class Frame3: # Add Student Frame
     def __init__(self, app):
         colorNum = app.getColor(2)
         self.app = app
@@ -762,6 +762,9 @@ class Frame5: # ADD PROGRAM FRAME
         self.rprogram_code_cb.config(values=v)
 
     def add_button_func(self):
+        if self.app.get_program(self.program_code_entry.get()) != None:
+            self.alert_message("Duplicate Error", "The program is not unique")
+            return
         self.app.add_program([self.college_code_cb.get(), self.program_code_entry.get(), self.program_name_entry.get()])
         self.exit_button_func()
         
@@ -796,6 +799,9 @@ class Frame5: # ADD PROGRAM FRAME
         self.rcollege_cb.config(values=self.app.getProgramsList())
 
         self.frame5.pack()
+    
+    def alert_message(self, title, text):
+        tk.messagebox.showerror(title, text)
 
 class Frame6(Frame3): # EDIT STUDENT FRAME
     def add_student(self, values):
@@ -878,7 +884,7 @@ class Frame7(Frame5): # ADD COLLEGE FRAME
         self.college_code_entry = ttk.Entry(AC_frames[0], width=10, font=('helvetica', 15))
         self.college_code_entry.pack(side='right')
 
-        self.college_name_label = tk.Label(AC_frames[1], text="Program Code", font=('helvetica', 15))
+        self.college_name_label = tk.Label(AC_frames[1], text="College Name", font=('helvetica', 15))
         self.college_name_label.pack(side='left')
         self.college_name_entry = ttk.Entry(AC_frames[1], width=10, font=('helvetica', 15))
         self.college_name_entry.pack(side='right')
@@ -910,6 +916,9 @@ class Frame7(Frame5): # ADD COLLEGE FRAME
         pass
 
     def add_button_func(self):
+        if self.app.get_college(self.college_code_entry.get()):
+            self.alert_message("Duplicate Error", "Your college is not unique")
+            return
         self.app.add_college([self.college_name_entry.get(), self.college_code_entry.get()])
         self.exit_button_func()
         
@@ -968,6 +977,9 @@ class Frame8(Frame1): # CRUDL COLLEGES
         self.acquired_list = self.app.colleges_database
         self.frame1.pack()
         self.show_list()
+
+    def alert_message(self, title, text):
+        tk.messagebox.showerror(title, text)
 
 class FrameEditProgram:
     def __init__(self, app):
