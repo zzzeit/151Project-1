@@ -51,6 +51,7 @@ class MiniProfile:
 class Frame1: # CRUDL FRAME
     def __init__(self, app):
         self.app = app
+
         self.entry_str_var = tk.StringVar()
         self.entry_str_var.trace_add(mode="write", callback=self.on_entry_updated)
         self.acquired_list = app.students_database
@@ -59,11 +60,19 @@ class Frame1: # CRUDL FRAME
 
         self.stud_label = {"First N":43, "Last N":47, "Sex":55, "ID#":66, "Year Level":43, "College":35, "Code":45}
         self.col_label = {"College":43, "Program Code":28, "Program Name": 185}
+        
+        # Settings
+        self.searchValues = {"First Name" : 0, "Last Name" : 1, "ID#" : 3, "Year Level" : 4}
+        self.searchValuesProgram = {"College Code" : 0, "Program Code" : 1}
+        self.searchValuesCollege = {"College Name" : 0, "College Code" : 1}
+        self.filterValues = [{"None" : None, "Sex" : 2, "Year Level" : 4, "College Code" : 5, "Program Code" : 6}, 
+                             {"None" : None, "College Code" : 0, "Program Code" : 1},
+                             {"None" : None, "College Code" : 1}]
 
         self.create_widgets(app)
 
     def create_widgets(self, app):
-        self.frame1 = tk.Frame(app.getRoot(), width=682.5, height=640, bg=self.app.getColor(0))
+        self.frame1 = tk.Frame(app.getRoot(), width=682.5, height=700, bg=self.app.getColor(0))
         self.frame1.pack_propagate(False)
 
         self.top_frame = tk.Frame(master=self.frame1, width=665, height=50, bg=app.getColor(0))
@@ -78,6 +87,11 @@ class Frame1: # CRUDL FRAME
         self.add_student_button.pack(side="left")
         self.search_entry.pack(side="left", padx=100)
         self.settings_button.pack(side="left")
+        
+        self.settings_frame = tk.Frame(self.frame1, bg="red")
+        self.settings_app = Frame4(app, self.settings_frame)
+        self.settings_frame.pack()
+        self.settings_app.frame4.pack()
 
         self.top_row_frame = tk.Frame(master=self.frame1, width=665 , height=25, bg=app.getColor(2))
         self.top_row_frame.pack_propagate(False)
@@ -543,24 +557,30 @@ class Frame3: # Add Student Frame
         self.frame3.pack()
 
 class Frame4: # SETTINGS FRAME
-    def __init__(self, app):
+    def __init__(self, app, parent_widget):
         self.app = app
+        self.parent_widget = parent_widget
         self.searchValues = {"First Name" : 0, "Last Name" : 1, "ID#" : 3, "Year Level" : 4}
         self.searchValuesProgram = {"College Code" : 0, "Program Code" : 1}
         self.searchValuesCollege = {"College Name" : 0, "College Code" : 1}
         self.filterValues = [{"None" : None, "Sex" : 2, "Year Level" : 4, "College Code" : 5, "Program Code" : 6}, 
                              {"None" : None, "College Code" : 0, "Program Code" : 1},
                              {"None" : None, "College Code" : 1}]
-        self.create_widgets(app)
+        self.create_widgets(self.app)
 
     def create_widgets(self, app):
-        self.frame4 = tk.Frame(app.getRoot(), bg=app.getColor(0))
-        self.frame4.pack()
+        self.frame4 = tk.Frame(self.parent_widget, bg=app.getColor(0))
+
+        self.frameleft = tk.Frame(self.frame4)
+        self.frameright = tk.Frame(self.frame4)
+
+        self.frameleft.pack(padx=(0, 10),side="left")
+        self.frameright.pack(side="left")
 
         # List
-        self.list_frame = tk.Frame(self.frame4, width=150, height=20)
+        self.list_frame = tk.Frame(self.frameleft, width=150, height=20)
         self.list_frame.pack_propagate(False)
-        self.list_frame.pack(pady=(10, 0))
+        self.list_frame.pack()
 
         self.list_label = tk.Label(self.list_frame, text="List Mode: ")
         self.list_label.pack(side="left")
@@ -570,9 +590,9 @@ class Frame4: # SETTINGS FRAME
         self.list_cb.bind("<<ComboboxSelected>>", self.cboxEvent)
 
         # Search By
-        self.search_frame = tk.Frame(self.frame4, width=150, height=20)
+        self.search_frame = tk.Frame(self.frameleft, width=150, height=20)
         self.search_frame.pack_propagate(False)
-        self.search_frame.pack(pady=(10,0))
+        self.search_frame.pack()
 
         self.search_label = tk.Label(self.search_frame, text="Search By: ")
         self.search_label.pack(side="left")
@@ -582,9 +602,9 @@ class Frame4: # SETTINGS FRAME
         self.search_cb.pack(side="right")
 
         # Sort By
-        self.sort_frame = tk.Frame(self.frame4, width=150, height=20)
+        self.sort_frame = tk.Frame(self.frameright, width=150, height=20)
         self.sort_frame.pack_propagate(False)
-        self.sort_frame.pack(pady=(10,0))
+        self.sort_frame.pack()
 
         self.sort_label = tk.Label(self.sort_frame, text="Order: ")
         self.sort_label.pack(side="left")
@@ -594,9 +614,9 @@ class Frame4: # SETTINGS FRAME
         self.sort_cb.pack(side="right")
 
         # Filter
-        self.filter_frame = tk.Frame(self.frame4, width=150, height=20)
+        self.filter_frame = tk.Frame(self.frameright, width=150, height=20)
         self.filter_frame.pack_propagate(False)
-        self.filter_frame.pack(pady=(10,0))
+        self.filter_frame.pack()
 
         self.filter_label = tk.Label(self.filter_frame, text="Filter: ")
         self.filter_label.pack(side="left")
@@ -605,7 +625,7 @@ class Frame4: # SETTINGS FRAME
         self.filter_cb.pack(side="right")
 
         # Filter Entry
-        self.filter_entry_frame = tk.Frame(self.frame4, width=150, height=20)
+        self.filter_entry_frame = tk.Frame(self.frameright, width=150, height=20)
         self.filter_entry_frame.pack_propagate(False)
         self.filter_entry_frame.pack()
 
@@ -621,14 +641,17 @@ class Frame4: # SETTINGS FRAME
         if self.list_cb.get() == "Students":
             self.search_cb['values'] = list(self.searchValues.keys())
             self.filter_cb.set("None")
+            self.search_cb.set('First Name')
             self.filter_cb['values'] = list(self.filterValues[0].keys())
         elif self.list_cb.get() == "Programs":
             self.search_cb['values'] = list(self.searchValuesProgram.keys())
             self.filter_cb.set("None")
+            self.search_cb.set('College Code')
             self.filter_cb['values'] = list(self.filterValues[1].keys())
         elif self.list_cb.get() == "Colleges":
             self.search_cb['values'] = list(self.searchValuesCollege.keys())
             self.filter_cb.set("None")
+            self.search_cb.set('College Code')
             self.filter_cb['values'] = list(self.filterValues[2].keys())
 
     def done_button(self):
@@ -682,12 +705,12 @@ class Frame4: # SETTINGS FRAME
     def transition(self):
         # self.list_cb.set('')
         # self.search_cb.set('')
-        # self.sort_cb.set('')
-        # self.filter_cb.set('')
-        self.updateValues()
+        self.sort_cb.set('Ascending')
+        self.filter_cb.set('None')
+        self.search_cb['values'] = []
+        self.filter_cb['values'] = []
         self.app.filter_mode = None
         self.app.filter_value = None
-        self.frame4.pack()
 
 class Frame5: # ADD PROGRAM FRAME
     def __init__(self, app):

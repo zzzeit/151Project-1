@@ -11,7 +11,7 @@ class StudentProfileApp:
     def __init__(self, root):
         self.root = root
         self.root.title("Student Profile")
-        self.root.geometry('700x640')
+        self.root.geometry('700x700')
         self.root.resizable(False, False)
 
         # FLAGS
@@ -47,10 +47,12 @@ class StudentProfileApp:
         self.updateProgramsList()
         self.updateCollegesList()
 
+        self.frame4_obj = ws.Frame4(self, None)
         self.frame1_obj = ws.Frame1(self)
+
         self.frame2_obj = ws.Frame2(self)
         self.frame3_obj = ws.Frame3(self)
-        self.frame4_obj = ws.Frame4(self)
+
         self.frame5_obj = ws.Frame5(self)
         self.frame6_obj = ws.Frame6(self)
         self.frame7_obj = ws.Frame7(self)
